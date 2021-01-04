@@ -1,0 +1,37 @@
+.borders{
+    border-top: none; border-left: none; border-right: none; outline: none;
+    border-bottom: 1px solid grey; background: #F8FAFC;
+    width: 175px; margin-right: 0px; padding: 0px;
+}
+.bordersSmall{
+    border-top: none; border-left: none; border-right: none; outline: none;
+    border-bottom: 1px solid grey; background: #F8FAFC;
+    width: 40px; margin-right: 0px; padding: 0px;
+}
+.points{
+    width: 50px;
+} th div:hover {cursor: pointer;}
+tbody svg:hover {cursor: pointer;}
+
+.newItem{
+    margin-top:15px; outline: none; padding: 0px 0px 0px 10px;
+    height:45px; width:250px;
+} /* .newItem:hover{box-shadow: 0px 2px 2px; outline:none} */ #hoverGreen {color:#38C172} #hoverGreen:hover{color:#2FA360; transition: .3s;}
+
+.taskList{
+    height: 400px; width: auto; overflow: scroll;
+} 
+
+.tbodySection:hover{background:#dee0e5; transition:.4s;cursor:pointer;}
+#tbodySectionComplete{background:#38c172;color:white;transition:.5s;}
+
+/* */
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+}
+input[type=number] {
+    -moz-appearance:textfield;
+}
