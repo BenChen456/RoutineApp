@@ -12,5 +12,11 @@ class TodolistController extends Controller
         return $list;
         /* return Todolist::all(); */
     }
+    
+    public function todolist(Request $request){
+        $todolists = DB::select('select * from todolists where user_id = :id', 
+         ['id' => $request->id]);
+         return $todolists;
+    }
 
 }

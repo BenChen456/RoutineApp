@@ -1,0 +1,159 @@
+*, html, body {margin: 0; padding: 0}
+
+.flex{
+    display: flex; justify-content: center; margin: 80px
+}
+
+/* Login / Register Forms */
+
+@media only screen and (min-width: 1100px) {
+    .signUpForm{
+        display: flex; justify-content: center; background: white;
+        width: 50vw; height: 65vh; 
+        border: 1px solid grey; border-radius: 3px;
+    }
+}
+
+/* @media only screen and (max-height: 700px) {
+    .signUpForm{
+        display: flex; justify-content: center;
+        width: 50vw; height: 65vh; 
+    }
+} */
+.signUpInput{
+    width: 500px; height: 40px; margin-bottom: 10px;
+    outline:none; padding: 0px 3px 0px 3px
+}
+
+
+/* Sign Up Button */
+.BtnFail{
+    height: 45px; width: 120px; margin: 10px 0px 10px 0px;
+    border-radius: 3px; outline:none; border: 1px solid #575757;
+    background: #575757; color: white; font-size:15px;
+    font-size: 20px;
+}.BtnFail:hover{cursor: default;}
+.BtnSuccess{
+    height: 45px; width: 100px; margin: 10px 0px 10px 0px;
+    border-radius: 3px; outline:none; border: 1px solid #3390ff;
+    background: #F8FAFC; color: #3390ff; font-size:15px;
+    font-size: 20px;
+}.BtnFail:hover{cursor: default;}
+@media only screen and (max-width: 600px) {
+    .hi{
+        color: green
+    }
+}
+
+/* Profile */
+
+
+/* Editing */
+#selected{background:#d4d6db};
+#postBtn{width:100px; height:75px; border-top: 1px solid grey;}
+
+/* Profile Settings */
+@media only screen and (max-width: 768px) { /* Smaller */
+    .mainBarMargins{
+        padding: 30px
+    }
+    .gridProfile{
+        display: block;
+        height: 100%; width: 100%; 
+    }
+    .sideBar{
+        display:flex; justify-content: center; align-items: center;
+        height: 100px; 
+        background: #808080; 
+    }
+
+    .sideBarItem{
+        display:flex; justify-content: center; align-items: center;
+        background: white; margin: 0px 0px 0px 0px;
+        width: 155px; height: 100%; 
+        border-radius: 5px; font-size: 20px;
+    }
+
+    .mainBar{
+        background: #dee2e6;
+        height: 100vh;
+    }
+    .mainBarItemTi{
+        font-size: 22px; 
+    }
+    .mainBarItemIn{
+        width: 100%; height: 50px; margin-bottom: 20px; 
+        padding:0px 10px 0px 10px; font-size: 16px; color: black;
+    }
+}
+
+@media only screen and (min-width: 768px) { /* Bigger */
+    .mainBarMargins{
+        margin: 20px 50px 0px 30px
+    }
+    .gridProfile{
+        display: grid; grid-template-columns: 20% 80%; grid-template-rows: 100%;
+        height: 100vh; 
+    }
+    .mainBarItemIn{
+        width: 500px; height: 50px; margin-bottom: 20px; 
+        padding:0px 10px 0px 10px; font-size: 16px; color: black;
+    }
+}
+
+/* TodoLists */
+/* .todoListsContainer{
+    display: grid; grid-template-columns: 30% 70%; grid-template-rows: 100%;
+} */
+
+/* Grid 1 */
+/* .grid1{
+    display: flex; justify-content: center;
+    height: 100vh; width: 100%; background-color: #eaebed;
+} */
+/* .profileFeed{
+    margin-top: 35px; background-color: #eaebed;
+    height: 80vh; width: 325px;
+} */
+/* .profileFeedContainer{
+    margin: 25px
+} */
+/* #PFwelback{font-size: 25px; font-weight: 600; color: #808080;}
+#PFusername{font-size: 30px; font-weight: 600; }
+#PFpoints{display: flex; height:70px; align-items: center;}
+#PFactivitylist{display:flex; height: 50px; align-items: center;}
+#PFactivitylist:hover{cursor: pointer; text-decoration: underline;} */
+
+/* Grid 2 */
+/* .grid2{
+    height: 100vh; width: 100%;
+}
+.todoListFeed{
+    margin-top: 35px;
+    background-color: #f8fafc; height: 80vh; width: 65vw;
+}
+.todoListFeedContainer{
+    display: flex; justify-content: center; align-items: center;
+    width:100%; height: 180px; 
+}
+.todoListBar{
+    width:93%; height: 140px; 
+    background-color: #d0d1d3; border-radius: 3px;
+    display: grid; grid-template-columns: 30% 40% 30%; grid-template-rows: 100%;
+}.todoListBar:hover{cursor: pointer;}
+
+.createTodoListBar{
+    display: flex; align-items: center;
+    width:93%; height: 140px; font-size: 25px;
+    background-color: #d0d1d3; border-radius: 3px;
+}.createTodoListBar:hover{cursor: pointer;} */
+
+/* TodoList Insides */
+/* .todoName{
+    display:flex; align-items: center; padding-left: 5vw;
+    font-size: 25px;
+}
+.todoSetBtn{
+    display:flex; align-items: center; justify-content: center;
+    background: #efefef; font-size: 25px;
+} */

@@ -16,3 +16,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('{reactRoutes}', function () {
     return view('welcome'); // your start view
 })->where('reactRoutes', '^((?!api).)*$');
+
+/* Route::get('/todolist', function () {
+    return view('welcome'); // your start view
+}) */;
+
+Auth::routes();
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
