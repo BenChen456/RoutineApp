@@ -1,5 +1,9 @@
 html, body {margin: 0; padding: 0};
 
+/* Hover */
+.hoverClass{}
+.hoverClass:hover{cursor: pointer;}
+
 /* Router */
 .text-link {
     text-decoration: none;
@@ -67,6 +71,11 @@ tbody svg:hover {cursor: pointer;}
     height: 50px; width: 160px; margin: 10px 0px 10px 40px;
     border-radius: 3px; outline:none; border: 1px solid #ce6867;
     background: #ce3c39; color: white; font-size:15px;
+}
+.deleteBtn{
+    height: 50px; width: 160px; margin: 10px 0px 10px 40px;
+    border-radius: 3px; outline:none; border: 1px solid #7681bf;
+    background: #5C6BC0; color: white; font-size:15px; text-decoration:none;
 }
 
 /* */

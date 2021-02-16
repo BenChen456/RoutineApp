@@ -2,14 +2,17 @@ import Axios from 'axios';
 import '../../css/components.css';
 import React, {useState,useContext} from 'react';
 import {Link} from 'react-router-dom';
+import {Spinner} from 'reactstrap';
 import cookie from 'js-cookie'; import {AppContext} from '../AppContext';
 
 export default function Login(props) {
     const {
         setUser, setLoggedIn, setTasksList, 
         setMainTaskList, setCompletion, 
-        setBgC, setsBgC
+        setBgC, setsBgC, setActs
     } = useContext(AppContext);
+
+    const [loaded, setLoaded] = useState(true); //Only in the catch as you go to userpage after loading
     const [loginInfo, setLoginInfo] = useState({
         email:'', password: '', errors: {}
     }); //Login Info
@@ -25,10 +28,15 @@ export default function Login(props) {
             email:loginInfo.email, 
             password:loginInfo.password
         };
+
+        setLoaded(false);
+
         Axios.post('http://localhost:8000/api/auth/login', data)
             .then(userRes => {
                 cookie.set('token', userRes.data.access_token);
-                Axios.post('http://localhost:8000/api/auth/getTime', {id:userRes.data.user.id})
+                Axios.post('http://localhost:8000/api/auth/getTime', {
+                    id:userRes.data.user.id
+                })
                 .then(time => {
                     //The Time stuff
                     if(time.data == "Reset"){ //We know tasks will be all incomplete and thus we don't have to fill in the colors
@@ -41,10 +49,19 @@ export default function Login(props) {
                             .then(response => {
                                 setTasksList([...response.data]);
                                 setUser({...userRes.data.user});
+
+                                //Getting the acts for the sidebar
+                                axios.post('http://localhost:8000/api/auth/acts', { 
+                                id: userRes.data.id,
+                                number: 10
+                                }).then(res => {
+                                    //Setting Logged in
+                                    setLoggedIn(true);
+                                    props.history.push('/profile');
+                                })
                             });
-                            setLoggedIn(true);
-                            props.history.push('/profile');
                         })
+                        
                     } else { //Tasks may be done and we need colors
                         console.log('No Reset Needed Login')
                         Axios.post('http://localhost:8000/api/auth/todolist', {id:userRes.data.user.id})
@@ -93,16 +110,85 @@ export default function Login(props) {
                 })
             })
             .catch(e => {
+                setLoaded(true);
                 alert("Incorrect Login");
-                setLoginInfo({...loginInfo, errors: e.response.data})
+                setLoginInfo({...loginInfo, errors: e.response.data});
             });
     };
 
+    const handleForm2 = (e) => {
+        e.preventDefault();
+
+        setLoaded(false);
+        
+        const data = {
+            email:loginInfo.email, 
+            password:loginInfo.password
+        };
+
+        Axios.post('http://localhost:8000/api/auth/login', data)
+        .then(userRes => {
+            cookie.set('token', userRes.data.access_token);
+            setUser({...userRes.data.user}); //The user detail (username, email, etc)
+
+            Axios.post('http://localhost:8000/api/auth/loginActsLists', {id: userRes.data.user.id})
+            .then(actsListsRes => {
+
+                //The Lists
+                setTasksList([...actsListsRes.data[0]]);
+
+                //Setting the active list the user is completing
+                actsListsRes.data[0].forEach(list => {
+                    if(list.id === userRes.data.user.current_todolist)
+                        setMainTaskList({...list})
+                })
+
+                //The Acts
+                setActs([...actsListsRes.data[1]]);
+                
+                //Setting the Color of the Nav Bar (only if the tasks aren't reset) (!resets as we only need color if we don't need to reset otherwise everything will be grey default)
+                if(!actsListsRes.data[3]){
+                    let done = 0
+                    actsListsRes.data[2].forEach(t => {
+                        if(t.completed === 0){
+                            done++;
+                        }
+                    });
+                    let percent = done/actsListsRes.data[2].length * 100;
+                    setCompletion(percent);
+    
+                    if(percent >= 0 && percent < 100){
+                        setBgC('#2FA360');
+                        setsBgC('green');
+                    }
+                    else {
+                        setBgC('#edce44');    
+                        setsBgC('yellow');
+                    }
+                }
+
+                setLoggedIn(true);
+                props.history.push('/userpanel');
+            })
+        }).catch(e => {
+            setLoaded(true);
+            alert("Incorrect Login");
+            setLoginInfo({...loginInfo, errors: e.response.data});
+        })   
+    }
+
     return (
-        <div>
+        <div>{!loaded ? 
+
+            <div style={{display:'flex', justifyContent:'center', alignItems:'center', height:'90vh'}}>
+                <Spinner />
+            </div>
+
+                :
+
             <div className="flex">
                 <div className="signUpForm">
-                    <form onSubmit={handleForm}>
+                    <form onSubmit={handleForm2}>
                         <h1 style={{marginTop:'90px'}}>Login</h1>
                         <div>Email</div>
                         <input 
@@ -134,6 +220,6 @@ export default function Login(props) {
                     </form> 
                 </div>
             </div>
-        </div>
+        }</div>
     )
 }

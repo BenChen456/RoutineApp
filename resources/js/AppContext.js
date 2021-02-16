@@ -14,75 +14,16 @@ export const AppProvider = (props) => {
     const [user, setUser] = useState({});
     const [tasksList, setTasksList] = useState([]); //All the tasklists
     const [mainTaskList, setMainTaskList] = useState({}); //Gets the tasklist you are completeing rn
-    
-    const [completion, setCompletion] = useState(0); //The state of the progress bar
-    const [bgC, setBgC] = useState('black'); //The color of the progress bar (Only on progressbar.js, todolist.js, login.js)
-    const [sbgC, setsBgC] = useState('black'); //The color of the 2nd progress bar
+    const [acts, setActs] = useState([]); //The acts for the sidebar (Login, AppContext get())
 
-    const [acts, setActs] = useState([]); //The acts for the sidebar
-    
+    const [completion, setCompletion] = useState(0); //The state of the progress bar
+    const [bgC, setBgC] = useState('#2FA360'); //The color of the progress bar (Only on nav,todolist,login,userpanel)
+    const [sbgC, setsBgC] = useState('#008000'); //The color of the 2nd progress bar
+
     const [loaded, setLoaded] = useState(false);
     const [loaded2, setLoaded2] = useState(false);
-    const [loaded3, setLoaded3] = useState(false); //If the day restarts and we reset the tasks
+    const [loaded3, setLoaded3] = useState(true); //If the day restarts and we reset the tasks
     const [loadedActs ,setLoadedActs] = useState(false); //If the acts loaded
-
-
-
-    /* We have an Issue of things loading for the first time and there are some requests that 
-    dont Work. I think this is due to only the app context having the headers set on load but 
-    IDK  */
-
-
-
-    const loadMePath = () => {
-        axios.post('http://localhost:8000/api/auth/getTime', {status:'today'}).then(time => {
-            let cTime = time.data;
-            axios.post('http://127.0.0.1:8000/api/auth/me').then((res) => {
-                setUser({
-                    email: res.data.email, username:res.data.username, 
-                    id: res.data.id, current_todolist: res.data.current_todolist, points:res.data.points,
-                    current_time: res.data.current_time
-                });
-                    axios.post('http://localhost:8000/api/auth/todolist', {id: res.data.id})
-                    .then(response => {
-                        response.data.forEach(list => {
-                            if(list.id === res.data.current_todolist)
-                                setMainTaskList(list) //Getting the tasklist being currently worked on
-                                console.log(res.data.current_time)
-                                console.log(cTime)
-                            if(res.data.current_time == cTime){
-                                axios.post('http://localhost:8000/api/auth/task/tasksRestart', {
-                                    user_id: res.data.id,
-                                    completed: 0 //Does this work? <++++++++
-                                }).then(taskRestartRes => {
-                                    axios.post('http://localhost:8000/api/auth/update',{
-                                        current_time: cTime
-                                    }).then(updateRes => {
-                                        setLoaded3(true)
-                                    })
-                                })
-                            } else {
-                                setLoaded3(true)
-                            }
-                        })
-                        setTasksList([...response.data])
-                        setLoaded2(true);
-                    })
-                    .catch(e => {
-                        setLoaded2(true)
-                        setLoginInfo({...loginInfo, errors: e.response.data})
-                    });
-                setLoggedIn(true);
-                setLoaded(true); //Loading
-            }).catch(e => {
-                setUser({}); setLoggedIn(false);
-                console.log('UnAuth')
-                setLoaded(true); //Loading
-                setLoaded2(true);
-                setLoaded3(true);
-            }) //Get the user info and confirms you are logged in
-        })
-    };
 
     const loadPathSecond = () => {
         axios.post('http://127.0.0.1:8000/api/auth/me').then(res => {
@@ -94,6 +35,7 @@ export const AppProvider = (props) => {
 
             axios.post('http://localhost:8000/api/auth/acts', { //Getting the acts for the sidebar
                 id: res.data.id,
+                number: 10
             }).then(res => {
                 setActs([...res.data])
                 setLoadedActs(true);
@@ -139,6 +81,67 @@ export const AppProvider = (props) => {
         }) 
     }
 
+    const loadPathSecond2 = () => {
+        axios.post('http://127.0.0.1:8000/api/auth/me').then(user => { 
+
+            //The User Info
+            setUser({
+                email: user.data.email, username:user.data.username, 
+                id: user.data.id, current_todolist: user.data.current_todolist, points:user.data.points,
+                current_time: user.data.current_time
+            });
+
+            axios.post('http://127.0.0.1:8000/api/auth/loginActsLists', {id: user.data.id}).then(res => {
+
+                //The Lists
+                setTasksList([...res.data[0]]);
+
+                //Setting the active list the user is completing
+                res.data[0].forEach(list => {
+                    if(list.id === user.data.current_todolist)
+                        setMainTaskList({...list})
+                })
+
+                //The Acts
+                setActs([...res.data[1]]);
+                
+                //Setting the Color of the Nav Bar (only if the tasks aren't reset) (!resets as we only need color if we don't need to reset otherwise everything will be grey default)
+                if(!res.data[3]){
+                    let done = 0
+                    res.data[2].forEach(t => {
+                        if(t.completed === 0){
+                            done++;
+                        }
+                    });
+                    let percent = done/res.data[2].length * 100;
+                    setCompletion(percent);
+    
+                    if(percent >= 0 && percent < 100){
+                        setBgC('#2FA360');
+                        setsBgC('green');
+                    }
+                    else {
+                        setBgC('#edce44');    
+                        setsBgC('yellow');
+                    }
+                }
+
+                setLoggedIn(true);
+                setLoaded(true); 
+                setLoaded2(true);
+                setLoaded3(true);
+                setLoadedActs(true);
+            })
+        }).catch(e => {
+            console.log(e)
+            setUser({}); setLoggedIn(false);
+            setLoaded(true);
+            setLoaded2(true);
+            setLoaded3(true);
+            setLoadedActs(true);
+        })  
+    }
+
     useEffect(() => {
         
         let token = cookie.get('token');
@@ -157,7 +160,7 @@ export const AppProvider = (props) => {
             }
         }) //Verify The Token
         
-        loadPathSecond();
+        loadPathSecond2();
 
     }, []);
 
@@ -168,6 +171,7 @@ export const AppProvider = (props) => {
             </div>
                 :
             <AppContext.Provider value={{
+                loadPathSecond,
                 tasksList, setTasksList, 
                 loggedIn, setLoggedIn,
                 user, setUser,

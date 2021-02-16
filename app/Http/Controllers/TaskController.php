@@ -19,7 +19,6 @@ class TaskController extends Controller
         for ($i = 0; $i < count($request->tasks); $i++) {
             $tasklist[] = [
                 'name' => $request->tasks[$i]['name'],
-                'difficulty' => $request->tasks[$i]['difficulty'],
                 'todolist_id' => $request->tasks[$i]['todolist_id'],
                 'status' => $request->tasks[$i]['status']
             ];
@@ -37,8 +36,9 @@ class TaskController extends Controller
                 DB::table('tasks')
                 ->where('id', $request->originalTasks[$i]['id'])
                 ->update(
-                    ['difficulty' => $request->originalTasks[$i]['difficulty'], 
-                    'name' => $request->originalTasks[$i]['name']],
+                    [
+                    'name' => $request->originalTasks[$i]['name']
+                    ],
                 );
             }
         }
@@ -68,8 +68,9 @@ class TaskController extends Controller
                 DB::table('tasks')
                 ->where('id', $request->originalTasks[$i]['id'])
                 ->update(
-                    ['difficulty' => $request->originalTasks[$i]['difficulty'], 
-                    'name' => $request->originalTasks[$i]['name']],
+                    [
+                    'name' => $request->originalTasks[$i]['name']
+                    ],
                 );
             }
         }
@@ -79,7 +80,6 @@ class TaskController extends Controller
             for ($i = 0; $i < count($request->tasks); $i++) {
                 $tasklist[] = [
                     'name' => $request->tasks[$i]['name'],
-                    'difficulty' => $request->tasks[$i]['difficulty'],
                     'todolist_id' => $request->tasks[$i]['todolist_id'],
                     'status' => $request->tasks[$i]['status'],
                     'user_id' => $request->tasks[$i]['user_id']
