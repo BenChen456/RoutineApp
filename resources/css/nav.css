@@ -1,18 +1,20 @@
 /* The Background Color */
 .bgcNothing{
-    background: #5c6bc0; color:white; height:7.5vh; width:100%;
-    display:flex; align-items:center; justify-content:space-between
+    background: #5c6bc0; color:white; height:7.5vh; width:100%; 
+    display:flex; align-items:center; justify-content:space-between;
+    position: fixed;
 }
 .bgcSomething{
-    background: grey; color:white; height:7.5vh; width:100%;
-    display:flex; align-items:center; justify-content:space-between
+    background: grey; color:white; height:7.5vh; width:100%; 
+    display:flex; align-items:center; justify-content:space-between;
+    position: fixed;
 }
 
 /* The White Nav Btns */
 .navBtns{
     display: flex; justify-content: space-between; align-items: center;
     width: 95%; padding:0px 0px 0px 40px;
-    position: absolute;
+    position: absolute; 
 }
 .navItem{
     display: flex; align-items: center; justify-content: center;

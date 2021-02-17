@@ -3,9 +3,14 @@ import {Link} from 'react-router-dom';
 import '../../css/components.css';
 import {AppContext} from '../AppContext';
 import Axios from 'axios';
+import cookie from 'js-cookie';
 
 export default function Profile() {
-    const {user, setUser} = useContext(AppContext);
+    const {
+        user, setUser,
+        setTasksList, setMainTaskList,setCompletion, setActs,
+        setLoggedIn
+    } = useContext(AppContext);
     const [loaded, setLoaded] = useState(true);
     const [userInfo, setUserInfo] = useState({
         username: '', id: null, email: ''
@@ -32,6 +37,15 @@ export default function Profile() {
             })
             .catch(e => console.log(e.response.data))
     }; //Submit Form
+    const logOut = () => {
+        cookie.remove('token');
+        setLoggedIn(false); 
+        setUser({});
+        setTasksList([]);
+        setMainTaskList({});
+        setActs([]);
+        setCompletion(0);
+    }
 
     const handleOnChange = event => {
         const { name, value } = event.target;
@@ -43,15 +57,18 @@ export default function Profile() {
         {!loaded ?
             <div>Loading</div> 
                 :
-            <div className='gridProfile'>
+            <div className='gridProfile' style={{paddingTop:'7.5vh'}}>
+
                 <div className="sideBar">
-                    <div>
-                        <Link to="/profile" className="text-link" 
-                            className="sideBarItem">
+                    <div style={{width:'100%'}} className="sideBarItem">
+                        <Link to="/profile" style={{textDecoration:'none',color:'black'}}>
                             Profile
                         </Link>
                     </div>
                 </div>
+
+                {/* Divide */}
+
                 <div className="mainBar">
                     <div className="mainBarMargins">
                         <div style={{
@@ -74,21 +91,36 @@ export default function Profile() {
                             value={userInfo.username}
                             onChange={handleOnChange}
                         />
-                        {userInfo.username !== user.username ?
-                            <div className="notBtn" onClick={()=>handleForm()}
-                                style={{marginTop:'10px'
-                            }}>
-                                Submit
+
+                        <div style={{display:'flex'}}>
+                            {userInfo.username !== user.username ?
+                                <div className="notBtn" onClick={()=>handleForm()}
+                                    style={{marginTop:'10px'
+                                }}>
+                                    Change
+                                </div>
+                                    :
+                                <div className="notBtnGrey" style={{marginTop:'10px'}}>
+                                    Change
+                                </div>
+                            }
+                        </div>
+
+                        <div style={{
+                            fontSize:'25px', height: '50px',marginBottom: '20px',
+                            borderBottom:'2px solid black', marginTop:'50px'
+                        }}>
+                            Log Out
+                        </div>
+                            <div className="logOutProfile" onClick={()=>logOut()}
+                                style={{margin:'25px 0px 0px 0px'}}>
+                                Log Out
                             </div>
-                                :
-                            <div className="notBtnGrey" style={{marginTop:'10px'}}>
-                                Submit
-                            </div>
-                        }
+
                         </div>
                 </div>
             </div>
         }    
         </div>
     )
-} //442
+}

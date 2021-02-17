@@ -1,13 +1,21 @@
 import React, {useState, useEffect, useContext} from 'react'; import '../../css/app.css';
 import ReactDOM from 'react-dom';
+import {Link} from 'react-router-dom';
 import axios from 'axios';
 import {Table, Button, Spinner} from 'reactstrap'; import {AppContext} from '../AppContext';
 
-function TodoList({match}) {
-    const {tasksList, mainTaskList, setMainTaskList, user} = useContext(AppContext);
+function NewTodo({urlId, props}) {
+    const {
+        tasksList, setTasksList,
+        mainTaskList, setMainTaskList, 
+        setCompletion, setBgC, setsBgC,
+        user} = useContext(AppContext);
+
+    const max = 30; //Max tasks per routine
     const [loaded, setLoaded] = useState(false); //If tasks are loaded
     const [loaded2, setLoaded2] = useState(false); //If list is loaded
-    const [list, setList] = useState(); //The list for this editing session
+
+    const [list, setList] = useState(null); //The list for this editing session
     const [changedList, setChangedList] = useState({
         name: '', changed: false
     }); //The name of the list for this editing session
@@ -22,15 +30,34 @@ function TodoList({match}) {
     }); //This will turn the update btn blue when ready (task if for task updates and etc)
     const [newItem, setNewItem] = useState({
         name: '',
-        difficulty: 0,
-        todolist_id: match.params.id, 
+        todolist_id: urlId, 
         id: Math.random() * -1 * 10,
         status: 'post',
         user_id: user.id
     }); //The New Item being made (change this for changes to uploading tasks)
 
     useEffect(() => {
-        sortingTime();
+        axios.post(`http://127.0.0.1:8000/api/auth/tasks/`, {id: urlId})
+        .then(res => {
+
+            /* Setting the tasklist being worked on */
+            tasksList.forEach(list => {
+                if(list.id == urlId){
+                    setList({...list})
+                    setChangedList({...changedList, name: list.name})
+                }
+            })
+
+            /* Sets the other stuff for updating the tasklist */
+            setOriginalTasks([...res.data]);
+            setTasks([...res.data]);
+            
+            setLoaded(true);
+            setLoaded2(true);
+        }).catch(e => {
+            setLoaded(true);
+            setLoaded2(true);
+        })
     }, [])
 
     const editingTime = (task, state) => {
@@ -40,39 +67,16 @@ function TodoList({match}) {
             setEditing(null); setSelectedItem({})
         }
     }
-    const sortingTime = () => {
-        axios.post(`http://127.0.0.1:8000/api/auth/tasks/`, {id: match.params.id})
-        .then(res => {
-
-            /* Setting the tasklist being worked on */
-            tasksList.forEach(list => {
-                if(list.id == match.params.id)
-                    setList({...list})
-                    setChangedList({...changedList, name: list.name})
-            })
-
-            /* Sets the other stuff for updating the tasklist */
-            let sortedTasks = [...res.data];
-            sortedTasks.sort((a, b)=>{return (b.difficulty-a.difficulty)}) 
-            setOriginalTasks(sortedTasks);
-            setTasks(sortedTasks);
-            setLoaded(true);
-            setLoaded2(true);
-        });
-    }
     const addToTask = () => {
         if(newItem.name[0] === " " 
             || newItem.name[0] === '' 
             || newItem.name[0] === undefined 
             || newItem.name[0] === null)
             {return alert('Name can not be empty.');}
-        if (newItem.difficulty <= 0 || newItem.difficulty > 100)
-            return alert(`The points amount shoud be between 1 - 100.`);
         setTasks([...tasks, newItem]);
         setNewItem({
             name: '',
-            difficulty: 0,
-            todolist_id: match.params.id, 
+            todolist_id: urlId, 
             id: Math.random() * -1,
             status: 'post',
             user_id: user.id
@@ -88,10 +92,8 @@ function TodoList({match}) {
         setTasks(faskTasks);
     }
 
-    const onDifficulty = (e) => {setSelectedItem({...selectedItem, difficulty : e.target.value})}
     const onName = (e) => {setSelectedItem({...selectedItem, name : e.target.value})} 
     const onNewName = (e) => {setNewItem({...newItem, name : e.target.value})}
-    const onNewDifficulty = (e) => {setNewItem({...newItem, difficulty : e.target.value})}
     const onNewListName = (e) => {setChangedList({changed:true,name:e.target.value})}  
     
     const save = (idNumber) => {
@@ -106,7 +108,6 @@ function TodoList({match}) {
             sortedTasks[index] = {
                 ...sortedTasks[index], 
                 name: selectedItem.name, 
-                difficulty: selectedItem.difficulty,
                 status: statusForPosting,
                 user_id: user.id
             }; //The Tasks are updated
@@ -116,7 +117,6 @@ function TodoList({match}) {
             sortedOriginalTasks[originalIndex] = {
                 ...sortedOriginalTasks[originalIndex],
                 name: selectedItem.name, 
-                difficulty: selectedItem.difficulty,
                 status: statusForPosting,
                 user_id: user.id
             } //The original tasks array is updated to be pushable
@@ -126,48 +126,58 @@ function TodoList({match}) {
         setTasks(sortedTasks);
     }
     const updateTodoList = () => {
-        if(updateCode.task && list.name !== changedList.name){
-            setLoaded(false);
-            setLoaded2(false);
-        } 
-        else if(updateCode.task){
-            setLoaded(false);
-        }
-        else if(list.name !== changedList.name){
-            setLoaded2(false);
-        }
+        setEditing(null); //Close anything editing that the user didnt close
 
-        if(updateCode.task){
-            //Updating the Tasks
-            var tasksToPost = [];
-                for (let i=0; i < tasks.length; i++){
-                    if(tasks[i].status === 'post'){
-                        tasksToPost.push({...tasks[i], status: 'original'});
-                    }
-                }
+        if(tasks.length > max && list.name == changedList.name) //A cap of max tasks per routine
+            return alert(`Max of ${max} tasks per routine`)
+        
+            if(updateCode.task && list.name !== changedList.name){
+                setLoaded(false);
+                setLoaded2(false);
+            } 
+            else if(updateCode.task){
+                setLoaded(false);
+            }
+            else if(list.name !== changedList.name){
+                setLoaded2(false);
+            }
     
-            axios.post(`http://127.0.0.1:8000/api/task/oneStopUpdate`, {
-                originalTasks:originalTasks,
-                deletedOriginalTasks:deletedOriginalTasks,
-                tasks: tasksToPost,
-                id: match.params.id,
-            }).then(res => {
-                setTasks(res.data);
-                setOriginalTasks(res.data);
-                setDeletedOriginalTasks([]);
-                setUpdateCode({...updateCode, task: false})
-                console.log(res.data)
-                setLoaded(true);
-            })
-        }
+            if(updateCode.task){
+                //Updating the Tasks
+                var tasksToPost = [];
+                    for (let i=0; i < tasks.length; i++){
+                        if(tasks[i].status === 'post'){
+                            tasksToPost.push({...tasks[i], status: 'original'});
+                        }
+                    }
+        
+                axios.post(`http://127.0.0.1:8000/api/task/oneStopUpdate`, {
+                    originalTasks:originalTasks,
+                    deletedOriginalTasks:deletedOriginalTasks,
+                    tasks: tasksToPost,
+                    id: urlId,
+                }).then(res => {
+                    setTasks(res.data);
+                    setOriginalTasks(res.data);
+                    setDeletedOriginalTasks([]);
+                    setUpdateCode({...updateCode, task: false});
+                    setLoaded(true);
+                })
+            }
 
+        //Changing the name of the list
         if(list.name !== changedList.name){
             axios.post(`http://127.0.0.1:8000/api/auth/todolist/todolistUpdate`, {
                 name: changedList.name,
-                id: match.params.id
+                id: urlId
             }).then(res => {
-                setList({...list, name: changedList});
+                setList({...list, name: changedList.name});
                 setChangedList({...changedList, changed:false});
+                
+                var index = tasksList.findIndex(l => l.id === list.id);
+                var standInList = [...tasksList];
+                standInList.splice(index, 1, {...list, name:changedList.name})
+
                 setLoaded2(true);
             });
         }
@@ -186,9 +196,51 @@ function TodoList({match}) {
             })
         }
     }
+    const delRoutine = () => {
+        axios.post('http://localhost:8000/api/auth/todolist/todolistDelete', {
+            id: urlId,
+        });
+        
+        //Removing the routine in the appcontext
+            let newList = [...tasksList];
+            let index = tasksList.findIndex(l => l.id == urlId);
+            newList.splice(index, 1);
+            setTasksList([...newList]);
+
+        //Stuff in case the maintasklist is the one we are removing
+            if(mainTaskList.id == urlId){
+                setMainTaskList({});
+                setCompletion(0);
+                axios.post('http://localhost:8000/api/auth/update', {
+                    current_todolist: null,
+                })
+            }
+        //Redirect to userpanel
+        props.history.push('/userpanel');
+    }
 
     return (
-        <div className="container" style={{marginTop:"80px"}}>
+        <div>{list === null && loaded && loaded2?
+
+        <div> {/* 404 Error */}
+            <div style={{
+                display:'flex', justifyContent:'center',
+                paddingTop:'20vh', fontSize:'25px'
+            }}>
+                Error: This Routine does not exist
+            </div>
+
+            <div style={{
+                display:'flex', justifyContent:'center',
+                fontSize:'23px'
+            }}>
+            <Link to='/userpanel'>Click here to return to the userpanel to select one</Link>
+            </div>
+        </div>
+                    :
+        <div className="container" style={{marginTop:"40px"}}>
+        {list !== null ?
+            <div> 
         {!loaded || !loaded2 ?
             <div style={{
                 display: 'flex', justifyContent:'center', alignItems:'center'
@@ -196,13 +248,13 @@ function TodoList({match}) {
                 <Spinner color="dark" />
             </div>
                 :
-            <div className="container">
+            <div className="container userpanelContainer">
                 {true ? 
                     <div style={{display:'flex', alignItems:'center'}}>
                         <div style={{fontSize:'20px'}}>Routine Name</div>
                         <input className="newItem" 
                             type="text" value={changedList.name} onChange={onNewListName}
-                            style={{margin:'10px 0px 20px 30px'}}    
+                            style={{margin:'0px 0px 20px 30px'}}    
                         />
                     </div>
                         :
@@ -213,7 +265,6 @@ function TodoList({match}) {
                 <Table>
                     <thead style={{height: "25px"}}>
                         <tr>
-                            <th><div>Points</div></th>
                             <th>Name</th>
                             <th>Edit</th>
                         </tr>
@@ -225,11 +276,6 @@ function TodoList({match}) {
                             key={task.id}
                         >
                             <tr>
-                                <td className="points" style={{padding: 'none'}}><div style={{display:'flex', alignItems:"center", height:"75px"}}>{task.id === editing ? 
-                                    <input type="number" className="bordersSmall" maxLength="3" onChange={onDifficulty} value={selectedItem.difficulty}/> 
-                                        : 
-                                    task.difficulty}
-                                </div></td>
                                 <td><div style={{display:'flex', alignItems:"center", height:"75px", width:"100px"}}>{task.id === editing ? 
                                     <input className="borders" onChange={onName} value={selectedItem.name}/>  
                                         : 
@@ -288,6 +334,7 @@ function TodoList({match}) {
                         </tbody>
                     )})}
                 </Table>
+                    {tasks.length >= max ? null :
                     <div id="postBtn" style={{
                         display:'flex', 
                         height:'100px', marginTop: '-18px',
@@ -301,17 +348,13 @@ function TodoList({match}) {
                             </svg>
                         </div>
                         <div >
-                            <div style={{marginRight:'25px'}}><p style={{marginBottom: "-15px"}}>Points</p>
-                                <input className="newItem" type="number" value={newItem.difficulty} onChange={onNewDifficulty}/>
-                            </div>
-                        </div>
-                        <div >
                             <div><p style={{marginBottom: "-15px"}}>Task Name</p>
                             <input className="newItem" type="text" value={newItem.name} onChange={onNewName}/>
                             </div>
                         </div>
-                    </div>
-                    <div className="saveBtns">
+                        <div style={{margin:'20px 0px 0px 20px'}}>Max of 30 tasks</div>
+                    </div>}
+                    <div className="saveBtns" style={{marginBottom:'50px'}}>
                         <div >
                             {updateCode.task || changedList.changed ?
                                 <div>
@@ -319,50 +362,100 @@ function TodoList({match}) {
                                         updateTodoList(); 
                                     }} 
                                         className="updateBtnSuccess">
-                                        Update Todo List
+                                        Update Routine
                                     </button>
                                     {list.id !== mainTaskList.id ?
                                         <button className="setCurrentBtn"
                                             onClick={()=>currentListStuff(list.id)}>
-                                            Set as Current List
+                                            Set as Current Routine
                                         </button> 
                                             :
                                         <button className="removeCurrentBtn"
                                             onClick={()=>currentListStuff(null)}>
-                                            Remove as Current List
+                                            Remove as Current Routine
                                         </button>
                                     }
+                                    <button to="/userpanel" 
+                                        className="deleteBtn"
+                                        onClick={()=>delRoutine()}>
+                                        <div style={{
+                                            display:'flex', 
+                                            justifyContent:'center',alignItems:'center',
+                                            width:'100%', height:'100%'
+                                        }}>
+                                            Delete Routine
+                                        </div>
+                                    </button>
                                 </div>
                                     :
                                 <div style={{display:'flex'}}>
                                     <button onClick={()=>alert('No Changes Made')} className="updateBtnFail">
-                                        Update Todo List
+                                        Update Routine
                                     </button>
                                     {list.id !== mainTaskList.id ?
                                         <button className="setCurrentBtn" 
                                             onClick={()=>currentListStuff(list.id)}>
-                                            Set as Current List
+                                            Set as Current Routine
                                         </button> 
                                             :
                                         <button className="removeCurrentBtn"
                                         onClick={()=>currentListStuff(null)}>
-                                            Remove as Current List
+                                            Remove as Current Routine
                                         </button>
                                     }
+                                    <button to="/userpanel" 
+                                        className="deleteBtn"
+                                        onClick={()=>delRoutine()}>
+                                        <div style={{
+                                            display:'flex', 
+                                            justifyContent:'center',alignItems:'center',
+                                            width:'100%', height:'100%'
+                                        }}>
+                                            Delete Routine
+                                        </div>
+                                    </button>
                                 </div>
                             }
                         </div>
                         <div >
-                            <button onClick={()=>{console.log(list.name, changedList, updateCode.task)}}>consolelog</button>
+                            <button onClick={()=>{console.log(list, mainTaskList, tasksList)}}>consolelog</button>
                         </div>
                     </div>
             </div>
-            } 
-        </div> 
+        } </div>
+            :
+            <div>{!loaded || !loaded2 ?
+                <div style={{
+                    display: 'flex', justifyContent:'center', alignItems:'center'
+                }}>
+                    <Spinner color="dark" />
+                </div>
+                    :
+                <div style={{
+                    display:'flex', justifyContent:'center', alignItems:'center',
+                    height:'80vh'
+                }}>
+                    <div>
+                        <div style={{width:'50vw', fontSize:'40px',
+                        display:'flex', justifyContent:'center'}}>
+                            404 Error
+                        </div>
+                        <div style={{width:'50vw', fontSize:'30px', color:'grey',
+                        display:'flex', justifyContent:'center'}}>
+                            This routine does 
+                            not exist please enter a valid url
+                        </div>
+                    </div>
+                </div>
+            }</div>
+        }</div>
+
+
+        }</div> 
     );
 }
 
-export default TodoList;
+export default NewTodo;
 
 if (document.getElementById('todolist')) {
     ReactDOM.render(<TodoList />, document.getElementById('todolist'));

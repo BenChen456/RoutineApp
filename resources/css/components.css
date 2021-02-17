@@ -1,7 +1,7 @@
 *, html, body {margin: 0; padding: 0}
 
 .flex{
-    display: flex; justify-content: center; margin: 80px
+    display: flex; justify-content: center; 
 }
 
 /* Login / Register Forms */
@@ -9,7 +9,7 @@
 @media only screen and (min-width: 1100px) {
     .signUpForm{
         display: flex; justify-content: center; background: white;
-        width: 50vw; height: 65vh; 
+        width: 50vw; height: 69vh; margin-top: 15vh;
         border: 1px solid grey; border-radius: 3px;
     }
 }
@@ -102,35 +102,40 @@
 }
 
 /* TodoLists */
-/* .todoListsContainer{
+:root {
+    --lGrey: #eaebed;
+    --rGrey: #f8fafc;
+}
+
+.todoListsContainer{
     display: grid; grid-template-columns: 30% 70%; grid-template-rows: 100%;
-} */
+}
+.userpanelContainer{margin-top:105px;}
 
 /* Grid 1 */
-/* .grid1{
+.grid1{
     display: flex; justify-content: center;
-    height: 100vh; width: 100%; background-color: #eaebed;
-} */
-/* .profileFeed{
-    margin-top: 35px; background-color: #eaebed;
+    height: 100vh; width: 100%; background-color: var(--lGrey);
+}
+.profileFeed{
+    margin-top: 35px; background-color: var(--lGrey);
     height: 80vh; width: 325px;
-} */
-/* .profileFeedContainer{
-    margin: 25px
-} */
-/* #PFwelback{font-size: 25px; font-weight: 600; color: #808080;}
+}
+.profileFeedContainer{
+    margin: 75px 25px 25px 25px
+}
+#PFwelback{font-size: 25px; font-weight: 600; color: #808080;}
 #PFusername{font-size: 30px; font-weight: 600; }
 #PFpoints{display: flex; height:70px; align-items: center;}
-#PFactivitylist{display:flex; height: 50px; align-items: center;}
-#PFactivitylist:hover{cursor: pointer; text-decoration: underline;} */
+#PFactivitylist{display:flex; height: 50px; align-items: center; font-size: 20px;}
+#PFactivitylist:hover{cursor: pointer; text-decoration: underline;}
 
 /* Grid 2 */
-/* .grid2{
-    height: 100vh; width: 100%;
+.grid2{
+    height: 100vh; width: 100%; background-color: var(--rGrey);
 }
 .todoListFeed{
-    margin-top: 35px;
-    background-color: #f8fafc; height: 80vh; width: 65vw;
+    background-color: var(--rGrey); height: 80vh; width: 65vw;
 }
 .todoListFeedContainer{
     display: flex; justify-content: center; align-items: center;
@@ -146,14 +151,14 @@
     display: flex; align-items: center;
     width:93%; height: 140px; font-size: 25px;
     background-color: #d0d1d3; border-radius: 3px;
-}.createTodoListBar:hover{cursor: pointer;} */
+}.createTodoListBar:hover{cursor: pointer;}
 
 /* TodoList Insides */
-/* .todoName{
+.todoName{
     display:flex; align-items: center; padding-left: 5vw;
     font-size: 25px;
 }
 .todoSetBtn{
     display:flex; align-items: center; justify-content: center;
     background: #efefef; font-size: 25px;
-} */
+}
