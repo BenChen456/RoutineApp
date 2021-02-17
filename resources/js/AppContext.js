@@ -25,6 +25,7 @@ export const AppProvider = (props) => {
     const [loaded3, setLoaded3] = useState(true); //If the day restarts and we reset the tasks
     const [loadedActs ,setLoadedActs] = useState(false); //If the acts loaded
 
+<<<<<<< HEAD
     const loadPath = () => {
         axios.post('http://127.0.0.1:8000/api/auth/me').then(user => { 
 
@@ -51,6 +52,82 @@ export const AppProvider = (props) => {
                 
                 //Setting the Color of the Nav Bar (only if the tasks aren't reset or maintask isnt null) (!resets as we only need color if we don't need to reset otherwise everything will be grey default)
                 if(!res.data[3] && res.data[2] !== null){
+                    let done = 0
+                    res.data[2].forEach(t => {
+                        if(t.completed === 0){
+                            done++;
+                        }
+                    });
+                    let percent = done/res.data[2].length * 100;
+                    setCompletion(percent);
+    
+                    if(percent >= 0 && percent < 100){
+                        setBgC('#2FA360');
+                        setsBgC('green');
+                    }
+                    else {
+                        setBgC('#edce44');    
+                        setsBgC('yellow');
+                    }
+                }
+
+                setLoggedIn(true);
+                setLoaded(true); 
+                setLoaded2(true);
+                setLoaded3(true);
+=======
+    const loadPathSecond = () => {
+        axios.post('http://127.0.0.1:8000/api/auth/me').then(res => {
+            setUser({
+                email: res.data.email, username:res.data.username, 
+                id: res.data.id, current_todolist: res.data.current_todolist, points:res.data.points,
+                current_time: res.data.current_time
+            });
+
+            axios.post('http://localhost:8000/api/auth/acts', { //Getting the acts for the sidebar
+                id: res.data.id,
+                number: 10
+            }).then(res => {
+                setActs([...res.data])
+>>>>>>> f0131deaa37ece93267df05f4e09094a8aded98d
+                setLoadedActs(true);
+            })
+        }).catch(e => {
+            console.log(e)
+            setUser({}); setLoggedIn(false);
+            setLoaded(true);
+            setLoaded2(true);
+            setLoaded3(true);
+            setLoadedActs(true);
+        })  
+    }
+
+    const loadPathSecond2 = () => {
+        axios.post('http://127.0.0.1:8000/api/auth/me').then(user => { 
+
+            //The User Info
+            setUser({
+                email: user.data.email, username:user.data.username, 
+                id: user.data.id, current_todolist: user.data.current_todolist, points:user.data.points,
+                current_time: user.data.current_time
+            });
+
+            axios.post('http://127.0.0.1:8000/api/auth/loginActsLists', {id: user.data.id}).then(res => {
+
+                //The Lists
+                setTasksList([...res.data[0]]);
+
+                //Setting the active list the user is completing
+                res.data[0].forEach(list => {
+                    if(list.id === user.data.current_todolist)
+                        setMainTaskList({...list})
+                })
+
+                //The Acts
+                setActs([...res.data[1]]);
+                
+                //Setting the Color of the Nav Bar (only if the tasks aren't reset) (!resets as we only need color if we don't need to reset otherwise everything will be grey default)
+                if(!res.data[3]){
                     let done = 0
                     res.data[2].forEach(t => {
                         if(t.completed === 0){
@@ -104,7 +181,11 @@ export const AppProvider = (props) => {
             }
         }) //Verify The Token
         
+<<<<<<< HEAD
         loadPath();
+=======
+        loadPathSecond2();
+>>>>>>> f0131deaa37ece93267df05f4e09094a8aded98d
 
     }, []);
 
@@ -115,7 +196,11 @@ export const AppProvider = (props) => {
             </div>
                 :
             <AppContext.Provider value={{
+<<<<<<< HEAD
                 loadPath,
+=======
+                loadPathSecond,
+>>>>>>> f0131deaa37ece93267df05f4e09094a8aded98d
                 tasksList, setTasksList, 
                 loggedIn, setLoggedIn,
                 user, setUser,

@@ -17,8 +17,13 @@ class AuthController extends Controller
         $this->middleware('auth:api', 
             [
                 'except' => [
+<<<<<<< HEAD
                     'login', 'register', /* 'loginHelper',
                     'todolist', 'todolistDelete', 'todolistUpdate',
+=======
+                    'login', 'register', 'loginActsLists',
+                    'todolist', 'todolistDelete',
+>>>>>>> f0131deaa37ece93267df05f4e09094a8aded98d
                     'tasks', 'tasksUpdate', 'tasksRestart',
                     'acts', 'actInsert',
                     'getTime' */
@@ -70,7 +75,11 @@ class AuthController extends Controller
         return $this->respondWithToken($token);
     }
 
+<<<<<<< HEAD
     public function loginHelper(Request $request){
+=======
+    public function loginActsLists(Request $request){
+>>>>>>> f0131deaa37ece93267df05f4e09094a8aded98d
         $user = User::find($request->id);
 
         //Todo Lists [0]

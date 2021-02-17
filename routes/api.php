@@ -14,7 +14,11 @@ Route::group([
     Route::post('/me', [App\Http\Controllers\AuthController::class, 'me']);
     Route::post('/update', [App\Http\Controllers\AuthController::class, 'update']);
     
+<<<<<<< HEAD
     Route::post('/loginHelper', [App\Http\Controllers\AuthController::class, 'loginHelper']);
+=======
+    Route::post('/loginActsLists', [App\Http\Controllers\AuthController::class, 'loginActsLists']);
+>>>>>>> f0131deaa37ece93267df05f4e09094a8aded98d
 
     Route::post('/todolist', [App\Http\Controllers\AuthController::class, 'todolist']);
     Route::post('/todolist/todolistUpdate', [App\Http\Controllers\AuthController::class, 'todolistUpdate']);

@@ -54,9 +54,12 @@ function NewTodo({urlId, props}) {
             
             setLoaded(true);
             setLoaded2(true);
+<<<<<<< HEAD
         }).catch(e => {
             setLoaded(true);
             setLoaded2(true);
+=======
+>>>>>>> f0131deaa37ece93267df05f4e09094a8aded98d
         })
     }, [])
 
@@ -126,7 +129,10 @@ function NewTodo({urlId, props}) {
         setTasks(sortedTasks);
     }
     const updateTodoList = () => {
+<<<<<<< HEAD
         setEditing(null); //Close anything editing that the user didnt close
+=======
+>>>>>>> f0131deaa37ece93267df05f4e09094a8aded98d
 
         if(tasks.length > max && list.name == changedList.name) //A cap of max tasks per routine
             return alert(`Max of ${max} tasks per routine`)
@@ -220,6 +226,7 @@ function NewTodo({urlId, props}) {
     }
 
     return (
+<<<<<<< HEAD
         <div>{list === null && loaded && loaded2?
 
         <div> {/* 404 Error */}
@@ -238,6 +245,8 @@ function NewTodo({urlId, props}) {
             </div>
         </div>
                     :
+=======
+>>>>>>> f0131deaa37ece93267df05f4e09094a8aded98d
         <div className="container" style={{marginTop:"40px"}}>
         {list !== null ?
             <div> 
@@ -417,9 +426,15 @@ function NewTodo({urlId, props}) {
                                 </div>
                             }
                         </div>
+<<<<<<< HEAD
                         <div >
                             <button onClick={()=>{console.log(list, mainTaskList, tasksList)}}>consolelog</button>
                         </div>
+=======
+{/*                         <div >
+                            <button onClick={()=>{console.log(list)}}>consolelog</button>
+                        </div> */}
+>>>>>>> f0131deaa37ece93267df05f4e09094a8aded98d
                     </div>
             </div>
         } </div>
@@ -448,9 +463,12 @@ function NewTodo({urlId, props}) {
                     </div>
                 </div>
             }</div>
+<<<<<<< HEAD
         }</div>
 
 
+=======
+>>>>>>> f0131deaa37ece93267df05f4e09094a8aded98d
         }</div> 
     );
 }
