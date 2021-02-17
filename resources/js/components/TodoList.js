@@ -1,9 +1,10 @@
 import React, {useState, useEffect, useContext} from 'react'; 
+import {Link} from 'react-router-dom';
 import '../../css/app.css';
 import ReactDOM from 'react-dom';
 import {Table} from 'reactstrap'; import {AppContext} from '../AppContext';
 
-function TodoList({urlId}) {
+function TodoList() {
     const {
         user, setUser, 
         setCompletion, 
@@ -12,12 +13,27 @@ function TodoList({urlId}) {
         acts ,setActs
     } = useContext(AppContext);
     const [tasks, setTasks] = useState([]); //Tasks 0 = completed 1 = not completed
+    const [streakC, setStreakC] = useState(''); //The color of the streak
 
     useEffect(() => {
+        if(mainTaskList.id === undefined){
+            return
+        }
         axios.post(`http://127.0.0.1:8000/api/auth/tasks`,{
-            id: urlId
+            id: mainTaskList.id
         }).then(res => {
-            setTasks([...res.data])
+            setTasks([...res.data]);
+            
+            //Streak Color
+            if(mainTaskList.streak === 0)
+                setStreakC('grey')
+            else if(mainTaskList.streak > 0 && mainTaskList.streak <= 6)
+                setStreakC('#efd664')
+            else if(mainTaskList.streak >= 7 && mainTaskList.streak <= 29)
+                setStreakC('#ffaf11')
+            else if(mainTaskList.streak >= 30 && mainTaskList.streak <= 364)
+                setStreakC('#d61111')
+            else setStreakC('pink')
         })
     }, [])
 
@@ -49,24 +65,21 @@ function TodoList({urlId}) {
         setCompletion(percent)
 
         //Setting the color based on points
-            if(percent >= 75 && percent < 100){
+            if(percent >= 0 && percent < 100){
                 setBgC('#2FA360');
                 setsBgC('green');
             }
-            else if(percent < 75){
-                setBgC('black');
-                setsBgC('grey');
-            }
-            else if (percent >= 100){
+            else {
                 setBgC('#edce44');    
                 setsBgC('yellow');
             }
         //Updating the streaks
-        if(done/tasks.length === 1 && mainTaskList.completed==1){
+        console.log(mainTaskList.completed)
+        if(done/tasks.length === 1 && mainTaskList.completed==1){//Make sure tasks are done and the list hasnt already been complteted
             axios.post(`http://127.0.0.1:8000/api/auth/todolist/todolistUpdate`, {
                 streak: mainTaskList.streak + 1,
                 completed: 0,
-                id: urlId
+                id: mainTaskList.id
             });
             setMainTaskList({...mainTaskList, 
                 streak: mainTaskList.streak + 1, completed: 0,
@@ -80,7 +93,7 @@ function TodoList({urlId}) {
         });
 
         //Adding the Points
-        if(done/tasks.length === 1 && mainTaskList.completed==1){
+        if(done/tasks.length === 1 && mainTaskList.completed==1){ //Make sure tasks are done and the list hasnt already been complteted
             axios.post(`http://127.0.0.1:8000/api/auth/update`, {
                 points: user.points+110
             });
@@ -96,7 +109,11 @@ function TodoList({urlId}) {
         if(done/tasks.length === 1 && mainTaskList.completed==1){ //If todolist is completed
             if(acts.length < 9) //If the acts list isnt too long
                 setActs([
-                    {name:`${mainTaskList.name} completed`, id:Math.random()*Math.random()},
+                    {
+                        name:`${mainTaskList.name}`, 
+                        id:Math.random()*Math.random(), 
+                        type:'list'
+                    },
                     {name:changedTasks[index].name, id:Math.random()*Math.random()},
                     ...acts, 
                 ]);
@@ -104,7 +121,11 @@ function TodoList({urlId}) {
                 let newActs = [...acts];
                 newActs.splice(8,2);
                 newActs = [
-                    {name:`${mainTaskList.name} completed`, id:Math.random()*Math.random()},
+                    {
+                        name:`${mainTaskList.name}`, 
+                        id:Math.random()*Math.random(),
+                        type:'list'
+                    },
                     {name:changedTasks[index].name, id:Math.random()*Math.random()}, 
                 ...newActs];
                 setActs(newActs);
@@ -134,16 +155,48 @@ function TodoList({urlId}) {
             }).then(res => console.log(res.data));
         }
     }
+    const call = () => {
+        axios.post(`http://127.0.0.1:8000/api/auth/loginActsLists`, {
+            id: user.id
+        }).then(res => {
+            console.log(res.data);
+        })
+    }
 
     return (
         <div className="container" style={{marginTop:"60px"}}>
-            <div className="container">
+            {mainTaskList.id === undefined ?
+                <div>
+                    <div style={{
+                        display:'flex', justifyContent:'center',
+                        paddingTop:'20vh', fontSize:'25px'
+                    }}>
+                        Error: No Routine Selected
+                    </div>
+
+                    <div style={{
+                        display:'flex', justifyContent:'center',
+                        fontSize:'23px'
+                    }}>
+                    <Link to='/userpanel'>Click here to return to the userpanel to select one</Link>
+                    </div>
+                </div>
+                    :
+            <div className="container userpanelContainer">
                 <div style={{display:'flex', alignItems:'flex-end', 
                     height:'55px', marginBottom:'20px'
                 }}>
                     <div style={{fontSize:'32px'}}>{mainTaskList.name}</div>
-                    <div style={{fontSize:'25px'}}>Streak {mainTaskList.streak}</div>
+                    <div style={{display:'flex',fontSize:'25px', margin:'0px 0px 2px 20px'}}>
+                        <svg style={{marginTop:'9px'}} xmlns="http://www.w3.org/2000/svg" 
+                             width="20" height="20" fill={streakC} className="bi bi-lightning-fill" viewBox="0 0 16 16">
+                        <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09z"/>
+                        </svg>
+                        <div>{mainTaskList.streak}</div>
+                    </div>
                 </div>
+                <div style={{overflow:'auto', height:'70vh'}}>
+                {/* <button onClick={()=>call()}>adas</button> */}
                 <Table>
                     <thead style={{height: "25px"}}>
                         <tr>
@@ -183,7 +236,8 @@ function TodoList({urlId}) {
                         </tbody>
                     )})}
                 </Table>
-            </div> 
+                </div>                           
+            </div>} 
         </div> 
     );
 }

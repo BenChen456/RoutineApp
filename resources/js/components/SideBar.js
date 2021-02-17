@@ -1,5 +1,6 @@
 import React, {useContext} from 'react';
 import {AppContext} from '../AppContext';
+import {Link} from 'react-router-dom';
 
 export default function SideBar() {
     const {user, acts} = useContext(AppContext);
@@ -7,7 +8,7 @@ export default function SideBar() {
         <div className="profileFeed">
             <div className="profileFeedContainer">
                 <div id="PFwelback">Welcome Back</div>
-                <button onClick={()=>console.log(acts)}>acts</button>
+                {/* <button onClick={()=>console.log(acts)}>acts</button> */}
                 <div id="PFusername">
                     {user.username}
                 </div>
@@ -19,7 +20,7 @@ export default function SideBar() {
                     <div style={{marginLeft:'10px'}}>{user.points} Points</div>
                 </div>
                 <div id="PFactivitylist">
-                    <div>Activity List</div>
+                    <Link style={{color:'black'}} to="/activity">Activity List</Link>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" className="bi bi-arrow-down-short" viewBox="0 0 16 16">
                     <path fillRule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
                     </svg>
@@ -35,13 +36,13 @@ export default function SideBar() {
                             <div key={a.id} style={{display:'flex', alignItems:'center',
                             width:'150px', borderLeft:'green 1px solid'}}>
                                 <div style={{marginLeft:'10px', display:'flex'}}>
-                                    {a.type === "task" ?
+                                    {a.type === "list" ?
                                         <div>
-                                            {a.name}
+                                            {a.name} Completed
                                         </div>
                                             :
                                         <div>
-                                            {a.name} Completed
+                                            {a.name}
                                         </div>
                                     }
                                 </div>
@@ -49,13 +50,13 @@ export default function SideBar() {
                             <div style={{margin:'0px 0px 0px 10px',
                                 display:'flex', alignItems:'center', 
                             }}>
-                                {a.type === "task" ? 
-                                    <div style={{color:'green'}}>
-                                        +10
-                                    </div>
-                                        :
+                                {a.type === "list" ? 
                                     <div style={{color:'#ffaf11'}}>
                                         +100
+                                    </div>
+                                        :
+                                    <div style={{color:'green'}}>
+                                        +10
                                     </div>
                                 }
                             </div>

@@ -17,6 +17,28 @@ export default function Register(props) {
 
     const handleForm = (e) => {
         e.preventDefault();
+
+        //Password Checking
+        if(loginInfo.password !== loginInfo.passwordC){
+            return alert("Passwords Do Not Match")
+        }
+        if(loginInfo.password === '' || loginInfo.password === ' '){
+            return alert("Password is empty")
+        }
+        if(loginInfo.password.length < 8){
+            return alert("Password has to be at least 8 characters long")
+        }
+
+        let hasCapOrSpecialChar = false; //Uppercase
+        for (var i = 0; i < loginInfo.password.length; i++) {
+            if(loginInfo.password[i].toUpperCase() === loginInfo.password[i])
+                hasCapOrSpecialChar = true;
+        }
+        
+        if(!hasCapOrSpecialChar){
+            return alert('Please include one capital or special character in password')
+        }
+
         axios.post('http://localhost:8000/api/auth/getTime', {status:'today'}).then(res => {
             console.log(res.data)
             Axios.post('http://localhost:8000/api/auth/register', {
@@ -32,7 +54,10 @@ export default function Register(props) {
                     setLoggedIn(true);
                     props.history.push('/profile');
                 })
-                .catch(e => setLoginInfo({...loginInfo, errors: e.response.data}))
+                .catch(e => {
+                    alert('Error: Please enter all fields')
+                    setLoginInfo({...loginInfo, errors: e.response.data})
+                })
         })
     };
 
@@ -42,7 +67,7 @@ export default function Register(props) {
                 <div className="signUpForm">
                     <form onSubmit={handleForm}>
                         <h1 style={{marginTop:'30px'}}>Register</h1>
-                        <div>
+                        <div style={{fontSize:'18px'}}>
                             Email
                         </div>
                         <input 
@@ -52,7 +77,7 @@ export default function Register(props) {
                             value={loginInfo.email}
                             onChange={handleOnChange}
                         />
-                        <div>Name</div>
+                        <div style={{fontSize:'18px'}}>Name</div>
                         <input 
                             className="signUpInput"
                             type="name" 
@@ -60,7 +85,7 @@ export default function Register(props) {
                             value={loginInfo.username}
                             onChange={handleOnChange}
                         />
-                        <div>Password</div>
+                        <div style={{fontSize:'18px'}}>Password</div>
                         <input 
                             className="signUpInput"
                             type="password" 
@@ -68,7 +93,10 @@ export default function Register(props) {
                             value={loginInfo.password}
                             onChange={handleOnChange}
                         />
-                        <div>Confirm Password</div>
+                        <div style={{margin:'-10px 0px 10px 0px', color:'#5e5f65',fontSize:'16px'}}>
+                            Password must be at least 8 characters long
+                        </div>
+                        <div style={{fontSize:'18px'}}>Confirm Password</div>
                         <input 
                             className="signUpInput"
                             type="password" 
