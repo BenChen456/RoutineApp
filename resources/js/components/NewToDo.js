@@ -417,9 +417,9 @@ function NewTodo({urlId, props}) {
                                 </div>
                             }
                         </div>
-                        <div >
-                            <button onClick={()=>{console.log(list, mainTaskList, tasksList)}}>consolelog</button>
-                        </div>
+{/*                         <div >
+                            <button onClick={()=>{console.log(list)}}>consolelog</button>
+                        </div> */}
                     </div>
             </div>
         } </div>
@@ -449,8 +449,6 @@ function NewTodo({urlId, props}) {
                 </div>
             }</div>
         }</div>
-
-
         }</div> 
     );
 }

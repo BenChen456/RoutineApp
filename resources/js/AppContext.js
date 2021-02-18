@@ -104,7 +104,6 @@ export const AppProvider = (props) => {
         }) //Verify The Token
         
         loadPath();
-
     }, []);
 
     return(

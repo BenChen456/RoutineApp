@@ -31,6 +31,7 @@ export default function Login(props) {
             email:loginInfo.email, 
             password:loginInfo.password
         };
+        setLoaded(false);
         /* http://localhost:8000 */
         Axios.post('/api/auth/login', data)
         .then(userRes => {
