@@ -31,14 +31,15 @@ export default function Login(props) {
             email:loginInfo.email, 
             password:loginInfo.password
         };
-        Axios.post('http://localhost:8000/api/auth/login', data)
+        /* http://localhost:8000 */
+        Axios.post('/api/auth/login', data)
         .then(userRes => {
             cookie.set('token', userRes.data.access_token);
             let token = cookie.get('token');
             Axios.defaults.headers.common["Authorization"] = `Bearer${token}`;
             setUser({...userRes.data.user}); //The user detail (username, email, etc)
 
-            Axios.post('http://localhost:8000/api/auth/loginHelper', {id: userRes.data.user.id})
+            Axios.post('/api/auth/loginHelper', {id: userRes.data.user.id})
             .then(actsListsRes => {
 
                 //The Lists
