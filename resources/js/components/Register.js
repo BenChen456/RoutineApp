@@ -3,12 +3,14 @@ import '../../css/components.css';
 import Axios from 'axios'; import {Link} from 'react-router-dom';
 import cookie from 'js-cookie';
 import {AppContext} from '../AppContext';
+import {Spinner} from 'reactstrap';
 
 export default function Register(props) {
     const {setUser, setLoggedIn} = useContext(AppContext);
     const [loginInfo, setLoginInfo] = useState({
         email:'', username: '', password: '', passwordC:'', errors: {}
     }); //Login Info
+    const [loaded, setLoaded] = useState(true);
 
     const handleOnChange = event => {
         const { name, value } = event.target;
@@ -39,13 +41,12 @@ export default function Register(props) {
             return alert('Please include one capital or special character in password')
         }
 
-        axios.post('http://localhost:8000/api/auth/getTime', {status:'today'}).then(res => {
-            console.log(res.data)
+        setLoaded(false);
+
             Axios.post('http://localhost:8000/api/auth/register', {
                 email:loginInfo.email, 
                 username: loginInfo.username,
                 password:loginInfo.password,
-                current_time: res.data
             })
                 .then(res => {
                     cookie.set('token', res.data.access_token);
@@ -53,16 +54,21 @@ export default function Register(props) {
                     setUser({...res.data.user});
                     setLoggedIn(true);
                     props.history.push('/profile');
+                    setLoaded(true);
                 })
                 .catch(e => {
                     alert('Error: Please enter all fields')
                     setLoginInfo({...loginInfo, errors: e.response.data})
+                    setLoaded(true);
                 })
-        })
     };
 
     return (
-        <div>
+        <div>{!loaded ?
+            <div style={{display:'flex', justifyContent:'center', alignItems:'center', height:'90vh'}}>
+                <Spinner />
+            </div>
+                :
             <div className="flex">
                 <div className="signUpForm">
                     <form onSubmit={handleForm}>
@@ -120,6 +126,6 @@ export default function Register(props) {
                     </form> 
                 </div>
             </div>
-        </div>
+        }</div>
     )
 }

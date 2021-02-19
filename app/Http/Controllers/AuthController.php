@@ -17,11 +17,11 @@ class AuthController extends Controller
         $this->middleware('auth:api', 
             [
                 'except' => [
-                    'login', 'register', /* 'loginHelper',
+                    'login', 'register', 'getTime'/* 'loginHelper',
                     'todolist', 'todolistDelete', 'todolistUpdate',
                     'tasks', 'tasksUpdate', 'tasksRestart',
                     'acts', 'actInsert',
-                    'getTime' */
+                     */
                 ]
             ]
         );
@@ -33,7 +33,7 @@ class AuthController extends Controller
 
     public function getTime(Request $request){
         //1 = true; "" = false;
-            $user = User::find(9);
+            $user = User::find($request->id);
             $userTime = strtotime($user->current_time);
             $tmr = Carbon::tomorrow('EST');
             $timeTmr = strtotime($tmr);
@@ -131,7 +131,7 @@ class AuthController extends Controller
             'username' => request('username'),
             'email' => request('email'),
             'password' => Hash::make(request('password')),
-            'current_time' => request('current_time')
+            'current_time' => Carbon::tomorrow('EST')
         ]);
 
         return $this->login(request());
