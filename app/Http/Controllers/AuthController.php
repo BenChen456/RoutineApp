@@ -27,6 +27,10 @@ class AuthController extends Controller
         );
     }
 
+    public function herokuStuffCheckApi(Request $request){
+        return $request->id;
+    }
+
     public function getTime(Request $request){
         //1 = true; "" = false;
             $user = User::find(9);

@@ -29,6 +29,8 @@ Route::group([
     Route::post('/act/insert', [App\Http\Controllers\AuthController::class, 'actInsert']);
 
     Route::post('/getTime', [App\Http\Controllers\AuthController::class, 'getTime']);
+
+    Route::post('/herokuStuffCheckApi', [App\Http\Controllers\AuthController::class, 'herokuStuffCheckApi']);
 });
 
 Route::get('/tasks/{id}', [App\Http\Controllers\TaskController::class, 'index']); //get

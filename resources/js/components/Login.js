@@ -33,8 +33,9 @@ export default function Login(props) {
         };
         setLoaded(false);
         /* http://localhost:8000 */
-        Axios.post('/api/auth/login', data)
+        Axios.post('http://localhost:8000/api/auth/login', data)
         .then(userRes => {
+           /*  console.log(userRes.data) */
             cookie.set('token', userRes.data.access_token);
             let token = cookie.get('token');
             Axios.defaults.headers.common["Authorization"] = `Bearer${token}`;
@@ -84,6 +85,9 @@ export default function Login(props) {
             alert("Incorrect Login");
             setLoginInfo({...loginInfo, errors: e.response.data});
         })   
+    }
+    const herokuStuffCheckApi = () =>{
+        Axios.post('/api/auth/herokuStuffCheckApi', {id:'hi'}).then(res => console.log(res))
     }
 
     return (

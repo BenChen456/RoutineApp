@@ -9,15 +9,7 @@
 @media only screen and (min-width: 1100px) {
     .signUpForm{
         display: flex; justify-content: center; background: white;
-<<<<<<< HEAD
         width: 50vw; height: 69vh; margin-top: 15vh;
-=======
-<<<<<<< HEAD
-        width: 50vw; height: 69vh; margin-top: 15vh;
-=======
-        width: 50vw; height: 65vh; margin-top: 20vh;
->>>>>>> f0131deaa37ece93267df05f4e09094a8aded98d
->>>>>>> f70a2fc93fce0f32d1a29ad2467d501d1e6e35ea
         border: 1px solid grey; border-radius: 3px;
     }
 }

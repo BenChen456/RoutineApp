@@ -7,7 +7,8 @@ import {Spinner} from 'reactstrap';
 export const AppContext = createContext();
 
 export const AppProvider = (props) => {
-    const jwt_token = process.env.MIX_JWT_SECRET;
+    /* const jwt_token = process.env.MIX_JWT_SECRET; */
+    const jwt_token = 'IkpYA74bhDaUQDIWRBMvy3edI9vZwRc04AifA1bq4SAR7EEgIGx7pNxSXoamtrhO';
     const [loggedIn, setLoggedIn] = useState(false);
 
     const [user, setUser] = useState({});
@@ -93,17 +94,18 @@ export const AppProvider = (props) => {
             if(err){
                 cookie.remove('token');
                 token = null;
-                /* console.log('if failed') */
+                console.log(err)
             } else {
                 if(decoded.iss !== 'http://localhost:8000/api/auth/login'){
                     cookie.remove('token');
                     token = null;
-                    /* console.log('iss fialed') */
+                    console.log('iss fialed')
                 }
             }
         }) //Verify The Token
         
         loadPath();
+
     }, []);
 
     return(
