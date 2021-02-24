@@ -9,7 +9,8 @@ export default function Login(props) {
     const {
         setUser, setLoggedIn, setTasksList, 
         setMainTaskList, setCompletion, 
-        setBgC, setsBgC, setActs
+        setBgC, setsBgC, setActs, setContextTasks,
+        setTopTasksList,setBottomTasksList
     } = useContext(AppContext);
 
     const [loaded, setLoaded] = useState(true); //Only in the catch as you go to userpage after loading
@@ -39,6 +40,7 @@ export default function Login(props) {
             cookie.set('token', userRes.data.access_token);
             let token = cookie.get('token');
             Axios.defaults.headers.common["Authorization"] = `Bearer${token}`;
+            console.log(userRes.data.user)
             setUser({...userRes.data.user}); //The user detail (username, email, etc)
 
             Axios.post('/api/auth/loginHelper', {id: userRes.data.user.id})
@@ -52,9 +54,21 @@ export default function Login(props) {
                     if(list.id === userRes.data.user.current_todolist)
                         setMainTaskList({...list})
                 })
+                let btmList = [];
+                actsListsRes.data[0].forEach(list => {
+                    if(list.id === userRes.data.user.current_todolist){
+                        setTopTasksList({...list})
+                    } else {
+                        btmList.push(list)
+                    }
+                })
+                setBottomTasksList(btmList);
 
                 //The Acts
                 setActs([...actsListsRes.data[1]]);
+
+                //Tasks
+                setContextTasks([...actsListsRes.data[4]]);
                 
                 //Setting the Color of the Nav Bar (only if the tasks aren't reset or maintask is null) (!resets as we only need color if we don't need to reset otherwise everything will be grey default)
                 if(!actsListsRes.data[3] && actsListsRes.data[2] !== null){

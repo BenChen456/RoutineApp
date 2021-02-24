@@ -7,17 +7,19 @@ import {Spinner} from 'reactstrap';
 export const AppContext = createContext();
 
 export const AppProvider = (props) => {
-    /* const jwt_token = process.env.MIX_JWT_SECRET; */
-    const jwt_token = 'IkpYA74bhDaUQDIWRBMvy3edI9vZwRc04AifA1bq4SAR7EEgIGx7pNxSXoamtrhO';
+    const jwt_token = process.env.MIX_JWT_SECRET;
     const [loggedIn, setLoggedIn] = useState(false);
 
     const [user, setUser] = useState({});
     const [tasksList, setTasksList] = useState([]); //All the tasklists
     const [mainTaskList, setMainTaskList] = useState({}); //Gets the tasklist you are completeing rn
     const [acts, setActs] = useState([]); //The acts for the sidebar (Login, AppContext get())
+    const [contextTasks, setContextTasks] = useState([]); //The tasks for this user
+    const [topTasksList, setTopTasksList] = useState({}); // The one tasklist at the top of the hr
+    const [bottomTasksList, setBottomTasksList] = useState([]); //The tasklists that are at the bottom of the hr
 
     const [completion, setCompletion] = useState(0); //The state of the progress bar
-    const [bgC, setBgC] = useState('#2FA360'); //The color of the progress bar (Only on nav,todolist,login,userpanel)
+    const [bgC, setBgC] = useState('#2FA360'); //The color of the progress bar (Only on nav,todolist,login,userpanel,newtodo)
     const [sbgC, setsBgC] = useState('#008000'); //The color of the 2nd progress bar
 
     const [loaded, setLoaded] = useState(false);
@@ -45,6 +47,15 @@ export const AppProvider = (props) => {
                     if(list.id === user.data.current_todolist)
                         setMainTaskList({...list})
                 })
+                let btmList = [];
+                res.data[0].forEach(list => {
+                    if(list.id === user.data.current_todolist){
+                        setTopTasksList({...list})
+                    } else {
+                        btmList.push(list)
+                    }
+                })
+                setBottomTasksList(btmList);
 
                 //The Acts
                 setActs([...res.data[1]]);
@@ -70,6 +81,9 @@ export const AppProvider = (props) => {
                     }
                 }
 
+                //Tasks
+                setContextTasks([...res.data[4]])
+
                 setLoggedIn(true);
                 setLoaded(true); 
                 setLoaded2(true);
@@ -94,12 +108,11 @@ export const AppProvider = (props) => {
             if(err){
                 cookie.remove('token');
                 token = null;
-                console.log(err)
             } else {
                 if(decoded.iss !== 'http://localhost:8000/api/auth/login'){
                     cookie.remove('token');
                     token = null;
-                    console.log('iss fialed')
+                    /* console.log('iss fialed') */
                 }
             }
         }) //Verify The Token
@@ -116,6 +129,9 @@ export const AppProvider = (props) => {
                 :
             <AppContext.Provider value={{
                 loadPath,
+                contextTasks, setContextTasks,
+                topTasksList, setTopTasksList,
+                bottomTasksList, setBottomTasksList,
                 tasksList, setTasksList, 
                 loggedIn, setLoggedIn,
                 user, setUser,

@@ -121,7 +121,11 @@ class AuthController extends Controller
                     ['id' => $user->current_todolist]);
                 } 
 
-        $actsLists = array($todolists, $acts, $mainTasksList, $reset);
+        //Tasks [4]
+        $tasks = DB::select('select * from tasks where user_id = :id', 
+        ['id' => $request->id]);
+
+        $actsLists = array($todolists, $acts, $mainTasksList, $reset, $tasks);
 
         return $actsLists;
     }

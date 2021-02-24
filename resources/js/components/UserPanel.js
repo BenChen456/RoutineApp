@@ -8,28 +8,20 @@ export default function UserPanel(props) {
     const {
             user, tasksList, setMainTaskList, setTasksList, 
             setCompletion, setBgC, setsBgC,
+            bottomTasksList,topTasksList,
+            setTopTasksList,setBottomTasksList,
+            contextTasks
         } = useContext(AppContext);
 
     const max = 10; //Max of 8 lists only
-    const [topTasksList, setTopTasksList] = useState({}); // The one tasklist at the top of the hr
-    const [bottomTasksList, setBottomTasksList] = useState([]); //The tasklists that are at the bottom of the hr
+/*     const [topTasksList, setTopTasksList] = useState({}); // The one tasklist at the top of the hr
+    const [bottomTasksList, setBottomTasksList] = useState([]); //The tasklists that are at the bottom of the hr */
     const [name, setName] = useState(''); //The name of the new list you are making at the bot
         
     const [rightLoaded, setRightLoaded] = useState(false);
     const [loaded, setLoaded] = useState(false);
     
     useEffect(() => {
-        let btmList = [];
-        tasksList.forEach(list => {
-            if(list.id === user.current_todolist){
-                setTopTasksList({...list})
-            } else {
-/*                 console.log(user.current_todolist)
-                console.log(list.id) */
-                btmList.push(list)
-            }
-        })
-        setBottomTasksList(btmList);
         setRightLoaded(true);
         setLoaded(true);
     }, [])
@@ -42,13 +34,13 @@ export default function UserPanel(props) {
         setRightLoaded(false);
         axios.post('http://localhost:8000/api/auth/update', {
             current_todolist: id,
-        }).then(res => {
+        })/* .then(res => { */
             if(id === null) /* If we are removing an item */  {
                 setBottomTasksList([...bottomTasksList, topTasksList])
                 setTopTasksList({});
-                setRightLoaded(true);
                 setMainTaskList({});
                 setCompletion(0);
+                setRightLoaded(true);
             } else /* Picking a new item */ {
                 let testBot = [...bottomTasksList];
                 let index = testBot.findIndex(list => list.id === id);
@@ -62,19 +54,23 @@ export default function UserPanel(props) {
                     }
 
                 //Setting the progress bar
-                axios.post(`http://127.0.0.1:8000/api/auth/tasks`,{
-                    id: id
-                }).then(res => {
-                    let tasks = [...res.data];
-                    
+                    let tasks = [];  
+                    contextTasks.forEach(t => {
+                        if(t.todolist_id === id)
+                            tasks.push(t);
+                    })  
+
                     let done = 0;
-                        tasks.forEach(t => {
-                            if(t.completed === 0){
+                    tasks.forEach(t => {
+                        if(t.completed === 0){
                                 done++;
                             }
                         });
                         
-                    let percent = done/tasks.length * 100;
+                    let percent = 0;
+                    if(done !== 0) {
+                        percent = done/tasks.length * 100;
+                    }
                     setCompletion(percent);
 
                     if(percent >= 0 && percent < 100){
@@ -86,15 +82,15 @@ export default function UserPanel(props) {
                         setsBgC('yellow');
                     }
 
-                    setRightLoaded(true);
-                })
+                    
+                    //Setting the lists on the page
+                    setBottomTasksList([...testBot]);
+                    setMainTaskList({...final[0]});
+                    setTopTasksList({...final[0]});
 
-                //Setting the lists on the page
-                setBottomTasksList([...testBot]);
-                setMainTaskList({...final[0]});
-                setTopTasksList({...final[0]});
+                    setRightLoaded(true);
             }
-        })
+        /* }) */
     } //To set the todolist as the main one and push it to the top
     const addNewList = () => {
         setLoaded(false);
@@ -105,12 +101,14 @@ export default function UserPanel(props) {
             setBottomTasksList([...bottomTasksList, {
                 id: res.data,
                 name: name,
-                user_id: user.id
+                user_id: user.id,
+                streak: 0
             }]);
             setTasksList([...tasksList, {
                 id: res.data,
                 name: name,
-                user_id: user.id
+                user_id: user.id,
+                streak: 0
             }]); 
             setName('');
             setLoaded(true);
@@ -169,7 +167,7 @@ export default function UserPanel(props) {
                                         <div className="todoSetBtn"
                                             onClick={()=>todoSetBtn(list.id)}
                                         >
-                                            Set As Main
+                                            Set As Current
                                         </div>
                                     </div>
                                 </div>

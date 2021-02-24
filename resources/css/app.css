@@ -66,18 +66,23 @@ tbody svg:hover {cursor: pointer;}
 
 .setCurrentBtn{
     height: 50px; width: 160px; margin: 10px 0px 10px 40px;
-    border-radius: 3px; outline:none; border: 1px solid #7681bf;
-    background: #5C6BC0; color: white; font-size:15px;
+    border-radius: 3px; outline:none; border: 1px solid #38c172;
+    background: #49b74d; color: white; font-size:15px;
 }
 .removeCurrentBtn{
     height: 50px; width: 160px; margin: 10px 0px 10px 40px;
-    border-radius: 3px; outline:none; border: 1px solid #ce6867;
-    background: #ce3c39; color: white; font-size:15px;
+    border-radius: 3px; outline:none; border: 1px solid #7681bf;
+    background: #5C6BC0; color: white; font-size:15px;
 }
 .deleteBtn{
     height: 50px; width: 160px; margin: 10px 0px 10px 40px;
-    border-radius: 3px; outline:none; border: 1px solid #7681bf;
-    background: #5C6BC0; color: white; font-size:15px; text-decoration:none;
+    border-radius: 3px; outline:none; border: 1px solid #ce6867;
+    background: #ce3c39; color: white; font-size:15px; text-decoration:none;
+}
+.goToBtn{
+    height: 50px; width: 160px; margin: 0px 0px 20px 30px;
+    border-radius: 3px; outline:none; border: 1px solid #47b4ef;
+    background: #35aef0; color: white; font-size:15px;
 }
 
 /* */

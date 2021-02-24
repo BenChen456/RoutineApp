@@ -7,17 +7,18 @@ export default function SideBar() {
     return (
         <div className="profileFeed">
             <div className="profileFeedContainer">
-                <div id="PFwelback">Welcome Back</div>
+                <div style={{fontSize:'33px',fontWeight:'600',color:'#808080'}}>Welcome Back</div>
                 {/* <button onClick={()=>console.log(acts)}>acts</button> */}
-                <div id="PFusername">
+                <div style={{fontSize:'38px', fontWeight: '600'}}>
                     {user.username}
                 </div>
+
                 <div id="PFpoints">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="#ffaf11" className="bi bi-award-fill" viewBox="0 0 16 16">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="27px" height="27px" fill="#ffaf11" className="bi bi-award-fill" viewBox="0 0 16 16">
                     <path d="M8 0l1.669.864 1.858.282.842 1.68 1.337 1.32L13.4 6l.306 1.854-1.337 1.32-.842 1.68-1.858.282L8 12l-1.669-.864-1.858-.282-.842-1.68-1.337-1.32L2.6 6l-.306-1.854 1.337-1.32.842-1.68L6.331.864 8 0z"/>
                     <path d="M4 11.794V16l4-1 4 1v-4.206l-2.018.306L8 13.126 6.018 12.1 4 11.794z"/>
                     </svg>
-                    <div style={{marginLeft:'10px'}}>{user.points} Points</div>
+                    <div style={{margin:'1px 0px 0px 10px',fontSize:'22px'}}>{user.points} Points</div>
                 </div>
                 <div id="PFactivitylist">
                     <Link style={{color:'black'}} to="/activity">Activity List</Link>
@@ -29,12 +30,14 @@ export default function SideBar() {
                 <div>
                     {acts.map(a => 
                         <div key={a.id}
-                            style={{display:'grid', 
+                            style={{display:'grid', fontSize:'16px',
                             gridTemplateColumns:'75% 25%', gridTemplateRows:'100%',
-                            width: '250px', height:'30px'
+                            width: '250px', height:'35px',
                         }}>
-                            <div key={a.id} style={{display:'flex', alignItems:'center',
-                            width:'150px', borderLeft:'green 1px solid'}}>
+                            <div key={a.id} style={{
+                                display:'flex', alignItems:'center', justifyContent:'space-between',
+                                width:'250px', borderLeft:'green 1px solid'
+                            }}>
                                 <div style={{marginLeft:'10px', display:'flex'}}>
                                     {a.type === "list" ?
                                         <div>
@@ -46,19 +49,17 @@ export default function SideBar() {
                                         </div>
                                     }
                                 </div>
-                            </div>
-                            <div style={{margin:'0px 0px 0px 10px',
-                                display:'flex', alignItems:'center', 
-                            }}>
-                                {a.type === "list" ? 
-                                    <div style={{color:'#ffaf11'}}>
-                                        +100
-                                    </div>
-                                        :
-                                    <div style={{color:'green'}}>
-                                        +10
-                                    </div>
-                                }
+                                <div style={{display:'flex', alignItems:'center'}}>
+                                    {a.type === "list" ? 
+                                        <div style={{color:'#ffaf11'}}>
+                                            +100
+                                        </div>
+                                            :
+                                        <div style={{color:'green'}}>
+                                            +10
+                                        </div>
+                                    }
+                                </div>
                             </div>
                         </div>
                     )}

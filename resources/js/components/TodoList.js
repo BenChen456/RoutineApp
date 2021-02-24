@@ -10,15 +10,17 @@ function TodoList() {
         setCompletion, 
         setBgC, setsBgC, 
         mainTaskList, setMainTaskList,
-        acts ,setActs
+        acts ,setActs,
+        setContextTasks, contextTasks
     } = useContext(AppContext);
     const [tasks, setTasks] = useState([]); //Tasks 0 = completed 1 = not completed
-    const [streakC, setStreakC] = useState(''); //The color of the streak
+    const [streakC, setStreakC] = useState('grey'); //The color of the streak
 
     useEffect(() => {
         if(mainTaskList.id === undefined){
             return
         }
+        console.log(mainTaskList);
         axios.post(`http://127.0.0.1:8000/api/auth/tasks`,{
             id: mainTaskList.id
         }).then(res => {
@@ -41,11 +43,11 @@ function TodoList() {
         let status = change;
         if(change == 1)
             status = 0;
-        else status = 1;
+        else return;
 
         let index = tasks.findIndex(i => i.id === idNumber);
         let changedTasks = [...tasks];
-        changedTasks[index] = {...changedTasks[index], completed: status};
+        changedTasks[index] = {...changedTasks[index], completed: 0};
         setTasks([...changedTasks]);
         //Making the change appear locally
 
@@ -91,6 +93,10 @@ function TodoList() {
             id: idNumber,
             completed: status
         });
+            let ctasks = [...contextTasks];
+            let cIndex = ctasks.findIndex(i => i.id === idNumber);
+            ctasks.splice(cIndex, 1, {...contextTasks[cIndex], completed:status})
+            setContextTasks([...ctasks]);
 
         //Adding the Points
         if(done/tasks.length === 1 && mainTaskList.completed==1){ //Make sure tasks are done and the list hasnt already been complteted
@@ -208,9 +214,11 @@ function TodoList() {
                         return( 
                         <tbody className="tbodySection" 
                             id={task.completed == 0 ? "tbodySectionComplete" : ''}
-                            key={task.id} onClick={()=>{
-                                completed(task.id, task.completed);
-                            }}
+                            key={task.id} 
+                            
+                            onClick={()=>
+                                {completed(task.id, task.completed);}
+                            }
                         >
                             <tr>
                                 <td>

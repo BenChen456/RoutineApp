@@ -118,16 +118,22 @@
     height: 100vh; width: 100%; background-color: var(--lGrey);
 }
 .profileFeed{
-    margin-top: 35px; background-color: var(--lGrey);
+    padding-top: 15px; background-color: var(--lGrey);
     height: 80vh; width: 325px;
 }
-.profileFeedContainer{
-    margin: 75px 25px 25px 25px
+.grid1Tut{
+    display: flex; justify-content: center; 
+    height: 100vh; width: 100%; background-color: var(--lGrey);
 }
-#PFwelback{font-size: 25px; font-weight: 600; color: #808080;}
-#PFusername{font-size: 30px; font-weight: 600; }
+.profileFeedTut{
+    padding-top: 35px; 
+    height: 80vh; width: 325px; 
+}
+.profileFeedContainer{
+    padding: 75px 25px 25px 25px
+}
 #PFpoints{display: flex; height:70px; align-items: center;}
-#PFactivitylist{display:flex; height: 50px; align-items: center; font-size: 20px;}
+#PFactivitylist{display:flex; height: 50px; align-items: center; font-size: 25px;}
 #PFactivitylist:hover{cursor: pointer; text-decoration: underline;}
 
 /* Grid 2 */
