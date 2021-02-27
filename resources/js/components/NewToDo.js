@@ -9,9 +9,8 @@ function NewTodo({urlId, props}) {
         tasksList, setTasksList,
         mainTaskList, setMainTaskList, 
         setCompletion, setBgC, setsBgC,
-        bottomTasksList,topTasksList,
-        setTopTasksList,setBottomTasksList, 
-        setContextTasks,user
+        bottomTasksList,setBottomTasksList, 
+        user
     } = useContext(AppContext);
 
     const max = 30; //Max tasks per routine
@@ -23,8 +22,6 @@ function NewTodo({urlId, props}) {
         name: '', changed: false
     }); //The name of the list for this editing session
     const [tasks, setTasks] = useState([]); //Tasks 0 = completed 1 = not completed | The tasks with negative ids are the ones that need to be posted
-    const [originalTasks, setOriginalTasks] = useState([]); //For orignal tasks that need modification before being posted again
-    const [deletedOriginalTasks, setDeletedOriginalTasks] = useState([]); //Original tasks that need deleting
     const [editing, setEditing] = useState(null); //If it === the task.id you are editing it
     const [selectedItem, setSelectedItem] = useState({}); //The item being edited
     const [updateCode, setUpdateCode] = useState({
@@ -38,6 +35,11 @@ function NewTodo({urlId, props}) {
         status: 'post',
         user_id: user.id
     }); //The New Item being made (change this for changes to uploading tasks)
+    const [changes, setChanges] = useState({ //The object for all the tasks and changes
+        tasks: [],
+        original:[],
+        delete:[]
+    })
 
     useEffect(() => {
         axios.post(`http://127.0.0.1:8000/api/auth/tasks/`, {id: urlId})
@@ -52,8 +54,17 @@ function NewTodo({urlId, props}) {
             })
 
             /* Sets the other stuff for updating the tasklist */
-            setOriginalTasks([...res.data]);
-            setTasks([...res.data]);
+
+                //
+                    let fakeChangesTask = [];
+                    res.data.forEach(t => {
+                        fakeChangesTask.push({...t, status: 'original'})
+                    });
+
+                    setChanges({...changes, tasks:[...fakeChangesTask]});
+                //
+
+            setTasks([...res.data]); //REMOVE//
             
             setLoaded(true);
             setLoaded2(true);
@@ -76,7 +87,10 @@ function NewTodo({urlId, props}) {
             || newItem.name[0] === undefined 
             || newItem.name[0] === null)
             {return alert('Name can not be empty.');}
-        setTasks([...tasks, newItem]);
+
+        setTasks([...tasks, newItem]); //REMOVE//
+        setChanges({...changes, tasks:[...changes.tasks, newItem]});
+
         setNewItem({
             name: '',
             todolist_id: urlId, 
@@ -87,12 +101,22 @@ function NewTodo({urlId, props}) {
     }
     const del = (task) => {
         let delTask = {...task, status: 'delete'};
-        if(task.status === 'original')
-            setDeletedOriginalTasks([...deletedOriginalTasks, delTask]);
-        let faskTasks = [...tasks];
-        let index = tasks.indexOf(task);
-        faskTasks.splice(index, 1);
-        setTasks(faskTasks);
+        let fakeTasks = [...changes.tasks];
+        let fakeIndex = changes.tasks.indexOf(task);
+        fakeTasks.splice(fakeIndex, 1);
+
+        if(task.status === 'original' || task.status === 'update'){
+            setChanges({
+                ...changes, 
+                tasks:[...fakeTasks], 
+                delete:[...changes.delete, {...delTask}]
+            });
+        } else {
+            setChanges({
+                ...changes, 
+                tasks:[...fakeTasks], 
+            });
+        }
     }
 
     const onName = (e) => {setSelectedItem({...selectedItem, name : e.target.value})} 
@@ -107,32 +131,20 @@ function NewTodo({urlId, props}) {
         } else {
             statusForPosting = 'update'
         }
-        let sortedTasks = [...tasks];
-        let index = sortedTasks.findIndex(i => i.id === idNumber);
-            sortedTasks[index] = {
-                ...sortedTasks[index], 
-                name: selectedItem.name, 
-                status: statusForPosting,
-                user_id: user.id
-            }; //The Tasks are updated
 
-        let sortedOriginalTasks = [...originalTasks];
-        let originalIndex = sortedOriginalTasks.findIndex(i => i.id === idNumber);
-            sortedOriginalTasks[originalIndex] = {
-                ...sortedOriginalTasks[originalIndex],
-                name: selectedItem.name, 
-                status: statusForPosting,
-                user_id: user.id
-            } //The original tasks array is updated to be pushable
-
+        let fakeTasks = [...changes.tasks];
+        let fakeIndex = fakeTasks.findIndex(i => i.id === idNumber);
+        fakeTasks.splice(fakeIndex, 1, {
+            ...fakeTasks[fakeIndex], 
+            name:selectedItem.name, status:statusForPosting, user_id: user.id
+        })
         editingTime(false);
-        setOriginalTasks(sortedOriginalTasks);
-        setTasks(sortedTasks);
+        setChanges({...changes, tasks:[...fakeTasks]});
     }
     const updateTodoList = () => {
         setEditing(null); //Close anything editing that the user didnt close
 
-        if(tasks.length > max && list.name == changedList.name) //A cap of max tasks per routine
+        if(changes.tasks.length > max && list.name == changedList.name) //A cap of max tasks per routine
             return alert(`Max of ${max} tasks per routine`)
         
             if(updateCode.task && list.name !== changedList.name){
@@ -147,43 +159,64 @@ function NewTodo({urlId, props}) {
             }
     
             if(updateCode.task){
-                //Updating the Tasks
-                var tasksToPost = [];
-                    for (let i=0; i < tasks.length; i++){
-                        if(tasks[i].status === 'post'){
-                            tasksToPost.push({...tasks[i], status: 'original'});
+
+                var tasksToPost = []; //We only pass an array of insertable tasks
+                var tasksToUpdate = []; //We only pass an array of updateable tasks
+
+                    for (let i=0; i < changes.tasks.length; i++){
+
+                        if(changes.tasks[i].status === 'post'){
+                            tasksToPost.push({
+                                name: changes.tasks[i].name,
+                                user_id: user.id,
+                                todolist_id: urlId,
+                                status: 'original'
+                            });
+                        }
+
+                        if (changes.tasks[i].status === 'update'){
+                            tasksToUpdate.push({
+                                name: changes.tasks[i].name,
+                                id: changes.tasks[i].id,
+                                status: 'original'
+                            })
                         }
                     }
         
-                axios.post(`http://127.0.0.1:8000/api/task/oneStopUpdate`, {
-                    originalTasks:originalTasks,
-                    deletedOriginalTasks:deletedOriginalTasks,
-                    tasks: tasksToPost,
+                axios.post(`http://127.0.0.1:8000/api/auth/tasks/oneStopUpdateNEW`, {
+                    tasksToDelete:changes.delete,
+                    post: tasksToPost,
+                    update: tasksToUpdate,
                     id: urlId,
                 }).then(res => {
 
-                    //Color of bar
-                    let done = 0
-                    res.data.forEach(t => {
-                        if(t.completed === 0){
-                            done++;
+                    if(mainTaskList.id == urlId){
+                        //Color of bar
+                        let done = 0
+                        tasks.forEach(t => {
+                            if(t.completed === 0){
+                                done++;
+                                }
+                            });
+                            let percent = done/tasks.length * 100;
+                            setCompletion(percent);
+    
+                            if(percent >= 0 && percent < 100){
+                                setBgC('#2FA360');
+                                setsBgC('green');
+                            } else {
+                                setBgC('#edce44');    
+                                setsBgC('yellow');
                             }
-                        });
-                        let percent = done/res.data.length * 100;
-                        setCompletion(percent);
+                    }
 
-                        if(percent >= 0 && percent < 100){
-                            setBgC('#2FA360');
-                            setsBgC('green');
-                        } else {
-                            setBgC('#edce44');    
-                            setsBgC('yellow');
-                        }
+                    setChanges({
+                        ...changes,
+                        tasks: [...res.data],
+                        delete: []
+                    })
 
-                    setTasks(res.data);
-                    setContextTasks([...res.data]);
-                    setOriginalTasks(res.data);
-                    setDeletedOriginalTasks([]);
+                    setTasks(tasks);
                     setUpdateCode({...updateCode, task: false});
                     setLoaded(true);
                 })
@@ -213,8 +246,8 @@ function NewTodo({urlId, props}) {
             axios.post('http://localhost:8000/api/auth/update', {
                 current_todolist: null,
             })
-                let btm = [...bottomTasksList, {...topTasksList}]; 
-                setTopTasksList({}); 
+                let btm = [...bottomTasksList, {...mainTaskList}]; 
+                setMainTaskList({}); 
                 setBottomTasksList([...btm]);
 
         } else {//Setting a new one
@@ -225,9 +258,15 @@ function NewTodo({urlId, props}) {
 
             let index = bottomTasksList.findIndex(i => i.id === id);
             let btm = [...bottomTasksList];
-            btm.splice(index, 1, {...topTasksList});
+
+            if(mainTaskList.id !== undefined){
+                btm.splice(index, 1, {...mainTaskList}); //If there is already something as main
+            } else {
+                btm.splice(index, 1); //If nothing is main
+            }
+
             setBottomTasksList([...btm]);
-            setTopTasksList({...list}); 
+            setMainTaskList({...list}); 
 
             let done = 0
             tasks.forEach(t => {
@@ -252,26 +291,32 @@ function NewTodo({urlId, props}) {
         axios.post('http://localhost:8000/api/auth/todolist/todolistDelete', {
             id: urlId,
         });
-        
-        //Removing the routine in the appcontext
-            let taskI = tasksList.findIndex(l => l.id == urlId);
-            let newList = [...tasksList];
-            newList.splice(taskI, 1);
-            let btmI = bottomTasksList.findIndex(l => l.id == urlId);
-            let btm = [...bottomTasksList];
-            btm.splice(btmI, 1);
-            
-            setBottomTasksList([...btm]);
-            setTasksList([...newList]);
 
         //Stuff in case the maintasklist is the one we are removing
             if(mainTaskList.id == urlId){
                 setMainTaskList({});
-                setTopTasksList({});
                 setCompletion(0);
+
+                //Removing routine from tasklist
+                let taskI = tasksList.findIndex(l => l.id == urlId);
+                let newList = [...tasksList];
+                newList.splice(taskI, 1);
+                setTasksList([...newList]);
+
                 axios.post('http://localhost:8000/api/auth/update', {
                     current_todolist: null,
                 })
+            } else {
+                //Removing the routine in the appcontext (If not mainlist)
+                    let taskI = tasksList.findIndex(l => l.id == urlId);
+                    let newList = [...tasksList];
+                    newList.splice(taskI, 1);
+                    let btmI = bottomTasksList.findIndex(l => l.id == urlId);
+                    let btm = [...bottomTasksList];
+                    btm.splice(btmI, 1);
+                    
+                    setBottomTasksList([...btm]);
+                    setTasksList([...newList]);
             }
         //Redirect to userpanel
         props.history.push('/userpanel');
@@ -309,6 +354,7 @@ function NewTodo({urlId, props}) {
             <div className="container userpanelContainer">
                 {true ? 
                     <div style={{display:'flex', alignItems:'center'}}>
+                        <button onClick={()=>console.log(changes)}>Changes</button>
                         <div style={{fontSize:'20px'}}>Routine Name</div>
                         <input className="newItem" 
                             type="text" value={changedList.name} onChange={onNewListName}
@@ -343,7 +389,7 @@ function NewTodo({urlId, props}) {
                             <th>Edit</th>
                         </tr>
                     </thead>
-                    {tasks.map((task) => {
+                    {changes.tasks.map((task) => {
                         return( 
                         <tbody className="tbodySection" 
                             id={selectedItem.id===task.id ? 'selected' : ''}
@@ -408,7 +454,7 @@ function NewTodo({urlId, props}) {
                         </tbody>
                     )})}
                 </Table>
-                    {tasks.length >= max ? null :
+                    {changes.tasks.length >= max ? null :
                     <div id="postBtn" style={{
                         display:'flex', 
                         height:'100px', marginTop: '-18px',

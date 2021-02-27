@@ -33,14 +33,11 @@ export default function Login(props) {
             password:loginInfo.password
         };
         setLoaded(false);
-        /* http://localhost:8000 */
         Axios.post('http://localhost:8000/api/auth/login', data)
         .then(userRes => {
-           /*  console.log(userRes.data) */
             cookie.set('token', userRes.data.access_token);
             let token = cookie.get('token');
             Axios.defaults.headers.common["Authorization"] = `Bearer${token}`;
-            console.log(userRes.data.user)
             setUser({...userRes.data.user}); //The user detail (username, email, etc)
 
             Axios.post('/api/auth/loginHelper', {id: userRes.data.user.id})
@@ -68,7 +65,7 @@ export default function Login(props) {
                 setActs([...actsListsRes.data[1]]);
 
                 //Tasks
-                setContextTasks([...actsListsRes.data[4]]);
+                /* setContextTasks([...actsListsRes.data[4]]) */;
                 
                 //Setting the Color of the Nav Bar (only if the tasks aren't reset or maintask is null) (!resets as we only need color if we don't need to reset otherwise everything will be grey default)
                 if(!actsListsRes.data[3] && actsListsRes.data[2] !== null){
@@ -99,9 +96,6 @@ export default function Login(props) {
             alert("Incorrect Login");
             setLoginInfo({...loginInfo, errors: e.response.data});
         })   
-    }
-    const herokuStuffCheckApi = () =>{
-        Axios.post('/api/auth/herokuStuffCheckApi', {id:'hi'}).then(res => console.log(res))
     }
 
     return (

@@ -24,6 +24,7 @@ Route::group([
     Route::post('/tasks', [App\Http\Controllers\AuthController::class, 'tasks']);
     Route::post('/task/update', [App\Http\Controllers\AuthController::class, 'tasksUpdate']);
     Route::post('/task/tasksRestart', [App\Http\Controllers\AuthController::class, 'tasksRestart']);
+    Route::post('/tasks/oneStopUpdateNEW', [App\Http\Controllers\TaskController::class, 'oneStopUpdateNEW']);
     
     Route::post('/acts', [App\Http\Controllers\AuthController::class, 'acts']);
     Route::post('/act/insert', [App\Http\Controllers\AuthController::class, 'actInsert']);
@@ -33,7 +34,7 @@ Route::group([
     Route::post('/herokuStuffCheckApi', [App\Http\Controllers\AuthController::class, 'herokuStuffCheckApi']);
 });
 
-Route::get('/tasks/{id}', [App\Http\Controllers\TaskController::class, 'index']); //get
+
 Route::post('/task', [App\Http\Controllers\TaskController::class, 'store']);      //post
 Route::post('/task/edit', [App\Http\Controllers\TaskController::class, 'update']);//put
 Route::post('/task/del', [App\Http\Controllers\TaskController::class, 'delete']); //delete

@@ -6,16 +6,15 @@ import SideBar from './SideBar';
 
 export default function UserPanel(props) {
     const {
-            user, tasksList, setMainTaskList, setTasksList, 
+            user,
+            setMainTaskList, mainTaskList,
+            setTasksList, tasksList,
             setCompletion, setBgC, setsBgC,
-            bottomTasksList,topTasksList,
-            setTopTasksList,setBottomTasksList,
-            contextTasks
+            bottomTasksList,setBottomTasksList,
+            setMainTasks
         } = useContext(AppContext);
 
-    const max = 10; //Max of 8 lists only
-/*     const [topTasksList, setTopTasksList] = useState({}); // The one tasklist at the top of the hr
-    const [bottomTasksList, setBottomTasksList] = useState([]); //The tasklists that are at the bottom of the hr */
+    const max = 10; //Max of 10 lists only
     const [name, setName] = useState(''); //The name of the new list you are making at the bot
         
     const [rightLoaded, setRightLoaded] = useState(false);
@@ -36,8 +35,7 @@ export default function UserPanel(props) {
             current_todolist: id,
         })/* .then(res => { */
             if(id === null) /* If we are removing an item */  {
-                setBottomTasksList([...bottomTasksList, topTasksList])
-                setTopTasksList({});
+                setBottomTasksList([...bottomTasksList, mainTaskList])
                 setMainTaskList({});
                 setCompletion(0);
                 setRightLoaded(true);
@@ -47,15 +45,20 @@ export default function UserPanel(props) {
 
                 //This is to put the toplist into the bottom but only if there is a top list so if the top list empty we put nothing here
                     let final = null;
-                    if(topTasksList.id === undefined){
+                    if(mainTaskList.id === undefined){
                         final = testBot.splice(index, 1);
                     } else {
-                        final = testBot.splice(index, 1, {...topTasksList});
+                        final = testBot.splice(index, 1, {...mainTaskList});
                     }
 
                 //Setting the progress bar
+                axios.post('http://localhost:8000/api/auth/tasks', {
+                    id: id,
+                }).then(res => {
+                    setMainTasks([...res.data]); //The Main Tasks are switched
+
                     let tasks = [];  
-                    contextTasks.forEach(t => {
+                    res.data.forEach(t => {
                         if(t.todolist_id === id)
                             tasks.push(t);
                     })  
@@ -86,9 +89,9 @@ export default function UserPanel(props) {
                     //Setting the lists on the page
                     setBottomTasksList([...testBot]);
                     setMainTaskList({...final[0]});
-                    setTopTasksList({...final[0]});
 
                     setRightLoaded(true);
+                })
             }
         /* }) */
     } //To set the todolist as the main one and push it to the top
@@ -124,24 +127,24 @@ export default function UserPanel(props) {
             <div className="todoListsContainer">
                 <div className="grid1">
                     <SideBar />
-{/*                     <button onClick={()=>console.log(topTasksList, bottomTasksList)}>
+{/*                     <button onClick={()=>console.log(mainTaskList, bottomTasksList)}>
                     tasklists for page</button> */}
                 </div>
                 <div className="grid2">
                     <div className="todoListFeed" style={{marginTop:'-20px'}}>
                         <div className="todoListFeedContainer userpanelContainer">{
-                            topTasksList.id === undefined ?
+                            mainTaskList.id === undefined ?
                             <div style={{display:'center', alignContent:'center', fontSize:'25px'}}>
                                 All Done!
                             </div> 
                                 :
                             <div className="todoListBar">
                                 <div className="todoName"
-                                    onClick={()=>toTodo(topTasksList.id)}
+                                    onClick={()=>toTodo(mainTaskList.id)}
                                 >
-                                    {topTasksList.name}
+                                    {mainTaskList.name}
                                 </div>
-                                <div onClick={()=>toTodo(topTasksList.id)}></div>
+                                <div onClick={()=>toTodo(mainTaskList.id)}></div>
                                 <div className="todoSetBtn"
                                     onClick={()=>todoSetBtn(null)}
                                 >

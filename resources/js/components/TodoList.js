@@ -10,6 +10,7 @@ function TodoList() {
         setCompletion, 
         setBgC, setsBgC, 
         mainTaskList, setMainTaskList,
+        mainTasks,setMainTasks,
         acts ,setActs,
         setContextTasks, contextTasks
     } = useContext(AppContext);
@@ -20,12 +21,9 @@ function TodoList() {
         if(mainTaskList.id === undefined){
             return
         }
-        console.log(mainTaskList);
-        axios.post(`http://127.0.0.1:8000/api/auth/tasks`,{
-            id: mainTaskList.id
-        }).then(res => {
-            setTasks([...res.data]);
-            
+
+            setTasks([...mainTasks]);
+            console.log(contextTasks)
             //Streak Color
             if(mainTaskList.streak === 0)
                 setStreakC('grey')
@@ -36,7 +34,6 @@ function TodoList() {
             else if(mainTaskList.streak >= 30 && mainTaskList.streak <= 364)
                 setStreakC('#d61111')
             else setStreakC('pink')
-        })
     }, [])
 
     const completed = (idNumber, change) => {
@@ -76,7 +73,7 @@ function TodoList() {
                 setsBgC('yellow');
             }
         //Updating the streaks
-        console.log(mainTaskList.completed)
+        /* console.log(mainTaskList.completed) */
         if(done/tasks.length === 1 && mainTaskList.completed==1){//Make sure tasks are done and the list hasnt already been complteted
             axios.post(`http://127.0.0.1:8000/api/auth/todolist/todolistUpdate`, {
                 streak: mainTaskList.streak + 1,

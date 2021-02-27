@@ -9,11 +9,6 @@ use Illuminate\Support\Facades\DB;
 
 class TaskController extends Controller
 {
-    public function index(Request $id){
-       $tasks = DB::select('select * from tasks where todolist_id = :id', 
-        ['id' => $id]);
-        return $tasks;
-    }
 
     public function store(Request $request){
         for ($i = 0; $i < count($request->tasks); $i++) {
@@ -91,5 +86,38 @@ class TaskController extends Controller
         $return = DB::select('select * from tasks where todolist_id = :id', ['id' => $request->id]);
         return $return;
     }
+
+    public function oneStopUpdateNEW(Request $request){
+        //Delete
+        if(count($request->tasksToDelete) > 0){
+            $delete = $request->tasksToDelete;
+            for($i = 0; $i < count($delete); $i++){
+                DB::table('tasks')->where('id', '=', $delete[$i]['id'])->delete();
+            }
+        }
+
+        //Update
+        if(count($request->update) > 0){
+            for($i=0; $i<count($request->update); $i++){
+                    DB::table('tasks')
+                    ->where('id', $request->update[$i]['id'])
+                    ->update(
+                        [
+                        'name' => $request->update[$i]['name']
+                        ],
+                    );
+            }
+        }
+
+        //Post
+        if(count($request->post) > 0){
+            Task::insert($request->post); 
+        }
+
+        $return = DB::select('select * from tasks where todolist_id = :id', ['id' => $request->id]);
+        return $return;
+    }
+
+
 
 }

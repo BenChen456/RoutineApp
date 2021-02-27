@@ -14,6 +14,7 @@ export const AppProvider = (props) => {
     const [tasksList, setTasksList] = useState([]); //All the tasklists
     const [mainTaskList, setMainTaskList] = useState({}); //Gets the tasklist you are completeing rn
     const [acts, setActs] = useState([]); //The acts for the sidebar (Login, AppContext get())
+    const [mainTasks, setMainTasks] = useState([]); //The tasks for the tasklist currently
     const [contextTasks, setContextTasks] = useState([]); //The tasks for this user
     const [topTasksList, setTopTasksList] = useState({}); // The one tasklist at the top of the hr
     const [bottomTasksList, setBottomTasksList] = useState([]); //The tasklists that are at the bottom of the hr
@@ -68,6 +69,7 @@ export const AppProvider = (props) => {
                             done++;
                         }
                     });
+                    setMainTasks([...res.data[2]]);
                     let percent = done/res.data[2].length * 100;
                     setCompletion(percent);
     
@@ -81,9 +83,7 @@ export const AppProvider = (props) => {
                     }
                 }
 
-                //Tasks
-                setContextTasks([...res.data[4]])
-
+                console.log(res.data[2])
                 setLoggedIn(true);
                 setLoaded(true); 
                 setLoaded2(true);
@@ -136,6 +136,7 @@ export const AppProvider = (props) => {
                 loggedIn, setLoggedIn,
                 user, setUser,
                 mainTaskList, setMainTaskList,
+                mainTasks,setMainTasks,
                 completion, setCompletion,
                 bgC, setBgC,
                 sbgC, setsBgC,

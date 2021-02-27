@@ -17,11 +17,7 @@ class AuthController extends Controller
         $this->middleware('auth:api', 
             [
                 'except' => [
-                    'login', 'register', 'getTime'/* 'loginHelper',
-                    'todolist', 'todolistDelete', 'todolistUpdate',
-                    'tasks', 'tasksUpdate', 'tasksRestart',
-                    'acts', 'actInsert',
-                     */
+                    'login', 'register', 'getTime'
                 ]
             ]
         );
@@ -121,11 +117,7 @@ class AuthController extends Controller
                     ['id' => $user->current_todolist]);
                 } 
 
-        //Tasks [4]
-        $tasks = DB::select('select * from tasks where user_id = :id', 
-        ['id' => $request->id]);
-
-        $actsLists = array($todolists, $acts, $mainTasksList, $reset, $tasks);
+        $actsLists = array($todolists, $acts, $mainTasksList, $reset);
 
         return $actsLists;
     }
