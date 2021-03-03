@@ -25,7 +25,8 @@ Route::group([
     Route::post('/task/update', [App\Http\Controllers\AuthController::class, 'tasksUpdate']);
     Route::post('/task/tasksRestart', [App\Http\Controllers\AuthController::class, 'tasksRestart']);
     Route::post('/tasks/oneStopUpdateNEW', [App\Http\Controllers\TaskController::class, 'oneStopUpdateNEW']);
-    
+    Route::post('/tasksUserPanel', [App\Http\Controllers\AuthController::class, 'tasksUserPanel']);
+
     Route::post('/acts', [App\Http\Controllers\AuthController::class, 'acts']);
     Route::post('/act/insert', [App\Http\Controllers\AuthController::class, 'actInsert']);
 

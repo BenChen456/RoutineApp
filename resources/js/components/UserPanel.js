@@ -3,24 +3,26 @@ import {AppContext} from '../AppContext';
 import axios from 'axios';
 import {Spinner} from 'reactstrap';
 import SideBar from './SideBar';
+import RoutineBlock from './Userpanel/RoutineBlock';
 
 export default function UserPanel(props) {
     const {
             user,
             setMainTaskList, mainTaskList,
-            setTasksList, tasksList,
             setCompletion, setBgC, setsBgC,
             bottomTasksList,setBottomTasksList,
+            routines, setRoutines,
             setMainTasks
         } = useContext(AppContext);
 
     const max = 10; //Max of 10 lists only
     const [name, setName] = useState(''); //The name of the new list you are making at the bot
-        
+
     const [rightLoaded, setRightLoaded] = useState(false);
     const [loaded, setLoaded] = useState(false);
     
     useEffect(() => {
+        console.log(routines)
         setRightLoaded(true);
         setLoaded(true);
     }, [])
@@ -101,18 +103,16 @@ export default function UserPanel(props) {
             user_id: user.id,
             name: name
         }).then(res => {
-            setBottomTasksList([...bottomTasksList, {
-                id: res.data,
-                name: name,
-                user_id: user.id,
-                streak: 0
-            }]);
-            setTasksList([...tasksList, {
-                id: res.data,
-                name: name,
-                user_id: user.id,
-                streak: 0
-            }]); 
+            setRoutines([...routines, {
+                list: {
+                    completed: 1,
+                    id: res.data,
+                    name: name,
+                    streak: 0,
+                    user_id: user.id
+                },
+                tasks: []
+            }])
             setName('');
             setLoaded(true);
         })
@@ -153,35 +153,20 @@ export default function UserPanel(props) {
                             </div>
                         }</div>
                         <div style={{display:'flex', width:'100%', justifyContent:'center'}}>
+
         {/* HR Line */}        <div style={{background:'grey', width:'95%', height:'1px'}}></div>
+
                         </div>
                         <div style={{width:'100%', height:'60vh', overflow:'auto'}}>
-                            {bottomTasksList.map(list => 
-                                <div key={list.id} 
-                                    style={{
-                                        display:'flex', justifyContent:'center', width:'100%',
-                                        marginTop:'25px'
-                                }}>
-                                    <div className="todoListBar">
-                                        <div className="todoName" onClick={()=>toTodo(list.id)}>
-                                            {list.name}
-                                        </div>
-                                        <div onClick={()=>toTodo(list.id)}></div>
-                                        <div className="todoSetBtn"
-                                            onClick={()=>todoSetBtn(list.id)}
-                                        >
-                                            Set As Current
-                                        </div>
-                                    </div>
-                                </div>
+                            {routines.map(r => 
+                                <RoutineBlock key={r.list.id} list={r.list} tasks={r.tasks} props={props}/>
                             )}
-                            <div 
-                                style={{
-                                    display:'flex', justifyContent:'center', width:'100%',
-                                    marginTop:'25px'
+                            
+                            <div style={{
+                                display:'flex',justifyContent:'center',width:'100%',marginTop:'25px'
                             }}>
                                 {/* Add New List */}
-                                {tasksList.length >= max ? null :
+                                {routines.length >= max ? null :
                                 <div style={{
                                         width:'93%', height: '140px', 
                                         borderRadius: '3px',

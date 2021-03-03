@@ -10,6 +10,7 @@ export default function Login(props) {
         setUser, setLoggedIn, setTasksList, 
         setMainTaskList, setCompletion, 
         setBgC, setsBgC, setActs, setContextTasks,
+        setRoutines,
         setTopTasksList,setBottomTasksList
     } = useContext(AppContext);
 
@@ -64,30 +65,15 @@ export default function Login(props) {
                 //The Acts
                 setActs([...actsListsRes.data[1]]);
 
-                //Tasks
-                /* setContextTasks([...actsListsRes.data[4]]) */;
-                
-                //Setting the Color of the Nav Bar (only if the tasks aren't reset or maintask is null) (!resets as we only need color if we don't need to reset otherwise everything will be grey default)
-                if(!actsListsRes.data[3] && actsListsRes.data[2] !== null){
-                    let done = 0
-                    actsListsRes.data[2].forEach(t => {
-                        if(t.completed === 0){
-                            done++;
-                        }
+                //The Routines
+                    let index = 0;
+                    var tasksAndLists = [];
+                    actsListsRes.data[0].forEach(list => {
+                        tasksAndLists = [...tasksAndLists, {list:list, tasks: [...actsListsRes.data[4][0+index]]}]
+                        index++;
                     });
-                    let percent = done/actsListsRes.data[2].length * 100;
-                    setCompletion(percent);
-    
-                    if(percent >= 0 && percent < 100){
-                        setBgC('#2FA360');
-                        setsBgC('green');
-                    }
-                    else {
-                        setBgC('#edce44');    
-                        setsBgC('yellow');
-                    }
-                }
-
+                    setRoutines([...tasksAndLists]);
+                
                 setLoggedIn(true);
                 props.history.push('/userpanel');
             })

@@ -1,4 +1,4 @@
-import React, {useContext,useEffect} from 'react'; 
+import React, {useContext,useEffect,useState} from 'react'; 
 import '../../css/nav.css';
 import {Link} from 'react-router-dom';
 import {AppContext} from '../AppContext';
@@ -9,12 +9,14 @@ export default function Nav() {
         loggedIn, setLoggedIn,
         setTasksList, tasksList, 
         mainTaskList, setMainTaskList,
-        completion, setCompletion,
         bgC, setBgC,
         sbgC, setsBgC, 
-        acts, setActs, bottomTasksList
+        acts, setActs, bottomTasksList,
+        routines
     } = useContext(AppContext);
-    
+    const [completed, setCompleted] = useState(0);//Number of tasks completed
+    const [color, setColor] = useState('grey'); //Color of bar
+
     useEffect(() => {
         if(mainTaskList.id !== undefined){
             axios.post(`http://127.0.0.1:8000/api/auth/tasks`,{
@@ -27,7 +29,7 @@ export default function Nav() {
                         }
                     });
                     let points = done/res.data.length * 100;
-                    setCompletion(done/res.data.length * 100); //Setting the amount of points
+                    /* setCompletion(done/res.data.length * 100);  *///Setting the amount of points
     
                     //Setting the color based on points
                         if(points >= 0 && points < 100){
@@ -41,7 +43,37 @@ export default function Nav() {
             })
         }
     }, [])
+    useEffect(()=>{
+        setProgressBar();
+    },[routines])
+    useEffect(()=>{
+        setProgressBar();
+    },[mainTaskList])
 
+    const setProgressBar = () =>{
+        if(mainTaskList.id === undefined) return;
+        let listIndex = routines.findIndex(r => r.list.id === mainTaskList.id);
+        let done=0;
+        routines[listIndex].tasks.forEach(t => {
+            if(t.completed === 0)
+                done++;
+        })
+        
+        if(done === 0){
+            setCompleted(0);
+        } else {
+            setCompleted(done/routines[listIndex].tasks.length * 100); //%
+        }
+            
+        //Color
+        if(done/routines[listIndex].tasks.length * 100 >= 0 && done/routines[listIndex].tasks.length * 100 < 100){ 
+            setColor('#2FA360');
+            setsBgC('green');
+        } else {
+            setColor('#edce44');    
+            setsBgC('yellow');
+        }
+    }
     const log = () => {
         console.log(tasksList,bottomTasksList,mainTaskList)
     }
@@ -52,8 +84,8 @@ export default function Nav() {
                 {mainTaskList.id !== undefined ? 
                     <div className='transition' 
                         style={{
-                            background: `${bgC}`,
-                            color:'white', height:'7.5vh', width:`${completion}%`,
+                            background: `${color}`,
+                            color:'white', height:'7.5vh', width:`${completed}%`,
                             display:'flex', alignItems:'center' 
                     }} />
                         :

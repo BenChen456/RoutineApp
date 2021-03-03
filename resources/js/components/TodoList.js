@@ -2,17 +2,16 @@ import React, {useState, useEffect, useContext} from 'react';
 import {Link} from 'react-router-dom';
 import '../../css/app.css';
 import ReactDOM from 'react-dom';
-import {Table} from 'reactstrap'; import {AppContext} from '../AppContext';
+import {Table, Spinner} from 'reactstrap'; 
+import {AppContext} from '../AppContext';
+import axios from 'axios';
 
 function TodoList() {
     const {
         user, setUser, 
-        setCompletion, 
-        setBgC, setsBgC, 
         mainTaskList, setMainTaskList,
-        mainTasks,setMainTasks,
         acts ,setActs,
-        setContextTasks, contextTasks
+        setRoutinesTasksHelper, //completed 
     } = useContext(AppContext);
     const [tasks, setTasks] = useState([]); //Tasks 0 = completed 1 = not completed
     const [streakC, setStreakC] = useState('grey'); //The color of the streak
@@ -22,8 +21,12 @@ function TodoList() {
             return
         }
 
-            setTasks([...mainTasks]);
-            console.log(contextTasks)
+            axios.post(`http://127.0.0.1:8000/api/auth/tasks`, { //The Tasks
+                id: mainTaskList.id
+            }).then(res => {
+                setTasks([...res.data]);
+            })
+
             //Streak Color
             if(mainTaskList.streak === 0)
                 setStreakC('grey')
@@ -34,6 +37,7 @@ function TodoList() {
             else if(mainTaskList.streak >= 30 && mainTaskList.streak <= 364)
                 setStreakC('#d61111')
             else setStreakC('pink')
+
     }, [])
 
     const completed = (idNumber, change) => {
@@ -42,12 +46,13 @@ function TodoList() {
             status = 0;
         else return;
 
+        //Tasks
         let index = tasks.findIndex(i => i.id === idNumber);
         let changedTasks = [...tasks];
         changedTasks[index] = {...changedTasks[index], completed: 0};
         setTasks([...changedTasks]);
-        //Making the change appear locally
-
+        setRoutinesTasksHelper(mainTaskList.id, changedTasks);
+        
         let done = 0;
         tasks.forEach(t => {
             if(t.completed === 0){
@@ -59,21 +64,8 @@ function TodoList() {
             } else {
                 done--;
             }
-        
-        let percent = done/tasks.length * 100;
-        setCompletion(percent)
 
-        //Setting the color based on points
-            if(percent >= 0 && percent < 100){
-                setBgC('#2FA360');
-                setsBgC('green');
-            }
-            else {
-                setBgC('#edce44');    
-                setsBgC('yellow');
-            }
         //Updating the streaks
-        /* console.log(mainTaskList.completed) */
         if(done/tasks.length === 1 && mainTaskList.completed==1){//Make sure tasks are done and the list hasnt already been complteted
             axios.post(`http://127.0.0.1:8000/api/auth/todolist/todolistUpdate`, {
                 streak: mainTaskList.streak + 1,
@@ -90,10 +82,6 @@ function TodoList() {
             id: idNumber,
             completed: status
         });
-            let ctasks = [...contextTasks];
-            let cIndex = ctasks.findIndex(i => i.id === idNumber);
-            ctasks.splice(cIndex, 1, {...contextTasks[cIndex], completed:status})
-            setContextTasks([...ctasks]);
 
         //Adding the Points
         if(done/tasks.length === 1 && mainTaskList.completed==1){ //Make sure tasks are done and the list hasnt already been complteted
@@ -139,7 +127,7 @@ function TodoList() {
                 name: changedTasks[index].name,
                 listName: mainTaskList.name,
                 todoCompleted: 0
-            }).then(res => console.log(res.data));
+            })/* .then(res => console.log(res.data)); */
 
         } else { // If todolist isn't completed
             if(acts.length < 10) //If the acts list isnt too long
@@ -155,15 +143,8 @@ function TodoList() {
                 user_id: user.id,
                 name: changedTasks[index].name,
                 todoCompleted: 1
-            }).then(res => console.log(res.data));
+            })/* .then(res => console.log(res.data)); */
         }
-    }
-    const call = () => {
-        axios.post(`http://127.0.0.1:8000/api/auth/loginActsLists`, {
-            id: user.id
-        }).then(res => {
-            console.log(res.data);
-        })
     }
 
     return (
@@ -195,52 +176,52 @@ function TodoList() {
                              width="20" height="20" fill={streakC} className="bi bi-lightning-fill" viewBox="0 0 16 16">
                         <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09z"/>
                         </svg>
-                        <div>{mainTaskList.streak}</div>
+                        <div style={{marginBottom:'4px'}}>{mainTaskList.streak} Streak</div>
                     </div>
                 </div>
                 <div style={{overflow:'auto', height:'70vh'}}>
-                {/* <button onClick={()=>call()}>adas</button> */}
-                <Table>
-                    <thead style={{height: "25px"}}>
-                        <tr>
-                            <th>Name</th>
-                            <th>Completed</th>
-                        </tr>
-                    </thead>
-                    {tasks.map((task) => {
-                        return( 
-                        <tbody className="tbodySection" 
-                            id={task.completed == 0 ? "tbodySectionComplete" : ''}
-                            key={task.id} 
-                            
-                            onClick={()=>
-                                {completed(task.id, task.completed);}
-                            }
-                        >
+                    {/* <button onClick={()=>call()}>adas</button> */}
+                    <Table>
+                        <thead style={{height: "25px"}}>
                             <tr>
-                                <td>
-                                    <div style={{
-                                        display:'flex', 
-                                        alignItems:"center", 
-                                        height:"75px", 
-                                        width:"100px"
-                                    }}>
-                                        {task.name}
-                                    </div>
-                                </td>
-                                <td>
-                                    <div style={{
-                                        display:'flex', alignItems:"center", 
-                                        height:"75px", width:"100px"
-                                    }}>
-                                        {task.completed === 1 ? 
-                                            "Not Completed" : "Completed"}
-                                    </div>
-                                </td>
+                                <th>Name</th>
+                                <th>Completed</th>
                             </tr>
-                        </tbody>
-                    )})}
-                </Table>
+                        </thead>
+                        {tasks.map((task) => {
+                            return( 
+                            <tbody className="tbodySection" 
+                                id={task.completed == 0 ? "tbodySectionComplete" : ''}
+                                key={task.id} 
+                                
+                                onClick={()=>
+                                    {completed(task.id, task.completed);}
+                                }
+                            >
+                                <tr>
+                                    <td>
+                                        <div style={{
+                                            display:'flex', 
+                                            alignItems:"center", 
+                                            height:"75px", 
+                                            width:"100px"
+                                        }}>
+                                            {task.name}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style={{
+                                            display:'flex', alignItems:"center", 
+                                            height:"75px", width:"100px"
+                                        }}>
+                                            {task.completed === 1 ? 
+                                                "Not Completed" : "Completed"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        )})}
+                    </Table>
                 </div>                           
             </div>} 
         </div> 

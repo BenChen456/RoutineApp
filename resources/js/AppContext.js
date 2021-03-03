@@ -16,6 +16,7 @@ export const AppProvider = (props) => {
     const [acts, setActs] = useState([]); //The acts for the sidebar (Login, AppContext get())
     const [mainTasks, setMainTasks] = useState([]); //The tasks for the tasklist currently
     const [contextTasks, setContextTasks] = useState([]); //The tasks for this user
+    const [routines, setRoutines] = useState([]); // {[{list:list, tasks:[]}]}
     const [topTasksList, setTopTasksList] = useState({}); // The one tasklist at the top of the hr
     const [bottomTasksList, setBottomTasksList] = useState([]); //The tasklists that are at the bottom of the hr
 
@@ -83,7 +84,15 @@ export const AppProvider = (props) => {
                     }
                 }
 
-                console.log(res.data[2])
+                //The Routines
+                let index = 0;
+                var tasksAndLists = [];
+                res.data[0].forEach(list => {
+                    tasksAndLists = [...tasksAndLists, {list:list, tasks: [...res.data[4][0+index]]}]
+                    index++;
+                });
+                setRoutines([...tasksAndLists]);
+
                 setLoggedIn(true);
                 setLoaded(true); 
                 setLoaded2(true);
@@ -98,6 +107,23 @@ export const AppProvider = (props) => {
             setLoaded3(true);
             setLoadedActs(true);
         })  
+    }
+    //How are these two routes setting routine when I don't have it set routine????
+    const setRoutinesListNameHelper = (listId, listName) => {
+        let listIndex = routines.findIndex(r => r.list.id === listId);
+        let routinesCopy = [...routines];
+        routinesCopy[listIndex].list.name = listName;
+
+        /* console.log(routinesCopy); */
+        setRoutines(routinesCopy);
+    };
+    const setRoutinesTasksHelper = (listId, tasks) => {
+        let listIndex = routines.findIndex(r => r.list.id === listId);
+        let routinesCopy = [...routines];
+        routinesCopy[listIndex].tasks = [...tasks];
+
+        /* console.log(routinesCopy) */
+        setRoutines(routinesCopy);
     }
 
     useEffect(() => {
@@ -128,7 +154,9 @@ export const AppProvider = (props) => {
             </div>
                 :
             <AppContext.Provider value={{
-                loadPath,
+                loadPath, 
+                setRoutinesListNameHelper, //NewTodo
+                setRoutinesTasksHelper, //NewTodo Todolist
                 contextTasks, setContextTasks,
                 topTasksList, setTopTasksList,
                 bottomTasksList, setBottomTasksList,
@@ -136,6 +164,7 @@ export const AppProvider = (props) => {
                 loggedIn, setLoggedIn,
                 user, setUser,
                 mainTaskList, setMainTaskList,
+                routines, setRoutines,
                 mainTasks,setMainTasks,
                 completion, setCompletion,
                 bgC, setBgC,

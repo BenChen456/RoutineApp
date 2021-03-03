@@ -112,12 +112,16 @@ class AuthController extends Controller
         
         //Tasks for MainList (To set the Color) [2]
             $mainTasksList = null;
-                if($user->current_todolist != null){
-                    $mainTasksList = DB::select('select * from tasks where todolist_id = :id', 
-                    ['id' => $user->current_todolist]);
-                } 
+            
+        //Routines (List and Tasks) [4]
+            $tasksOfRoutines = [];
 
-        $actsLists = array($todolists, $acts, $mainTasksList, $reset);
+            foreach($todolists as $list){
+                $lists = Todolist::findOrFail($list->id)->task;
+                array_push($tasksOfRoutines, $lists);
+            }
+
+        $actsLists = array($todolists, $acts, $mainTasksList, $reset, $tasksOfRoutines);
 
         return $actsLists;
     }
@@ -173,12 +177,24 @@ class AuthController extends Controller
 
     public function todolistDelete(Request $request){
         DB::table('todolists')->where('id', '=', $request->id)->delete();
+        DB::table('tasks')->where('todolist_id', '=', $request->id)->delete();
     }
 
     public function tasks(Request $request){
          $list = Todolist::findOrFail($request->id)->task;
          return $list;
     }
+
+    public function tasksUserPanel(Request $request){
+        $tasksOfRoutines = [];
+
+        foreach($request->idsOfList as $id){
+            $list = Todolist::findOrFail($id)->task;
+            array_push($tasksOfRoutines, $list);
+        }
+
+        return $tasksOfRoutines;
+   }
 
     public function tasksUpdate(Request $request){
         DB::table('tasks')
