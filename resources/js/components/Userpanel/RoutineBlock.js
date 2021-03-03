@@ -21,7 +21,7 @@ export default function RoutineBlock({list, tasks, props}) {
     return (
         <div>
             <div className="routineBar">
-                <div style={{height:'75%',width:'90%', marginTop:'15px'}} 
+                <div style={{height:'75%',width:'70%', marginTop:'15px'}} 
                     onClick={()=>toTodo(list.id)}
                 >
                     <div style={{fontSize:'35px',width:'70%'}}>
@@ -34,6 +34,10 @@ export default function RoutineBlock({list, tasks, props}) {
                             <div style={{width:`${per}%`,background:'#2FA360',height:'6px',borderRadius:'3px'}}/>
                         </div>
                     </div>
+                </div>
+
+                <div>
+
                 </div>
             </div>
         </div>

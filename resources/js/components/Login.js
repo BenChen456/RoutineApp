@@ -73,6 +73,7 @@ export default function Login(props) {
                         index++;
                     });
                     setRoutines([...tasksAndLists]);
+                    console.log(tasksAndLists)
                 
                 setLoggedIn(true);
                 props.history.push('/userpanel');

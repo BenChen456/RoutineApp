@@ -92,6 +92,7 @@ export const AppProvider = (props) => {
                     index++;
                 });
                 setRoutines([...tasksAndLists]);
+                console.log(tasksAndLists)
 
                 setLoggedIn(true);
                 setLoaded(true); 
