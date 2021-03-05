@@ -134,7 +134,7 @@ class AuthController extends Controller
             'current_time' => Carbon::tomorrow('EST')
         ]);
 
-        return $this->login(request());
+        /* return $this->login(request()); */
     }
 
     public function update(Request $request){
@@ -300,7 +300,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
+            /* 'expires_in' => auth()->factory()->getTTL() * 60, */
             'user' => auth()->user(),
         ]);
     }

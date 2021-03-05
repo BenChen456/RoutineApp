@@ -53,8 +53,8 @@ export default function Nav() {
     const setProgressBar = () =>{
         if(mainTaskList.id === undefined || routines.length === 0) return;
         let listIndex = routines.findIndex(r => r.list.id === mainTaskList.id);
-        console.log(mainTaskList)
-        console.log(routines)
+/*         console.log(mainTaskList)
+        console.log(routines) */
         let done=0;
         routines[listIndex].tasks.forEach(t => {
             if(t.completed === 0)
@@ -77,7 +77,7 @@ export default function Nav() {
         }
     }
     const log = () => {
-        console.log(tasksList,bottomTasksList,mainTaskList)
+        console.log(mainTaskList)
     }
 
     return (

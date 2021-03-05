@@ -8,7 +8,7 @@ import cookie from 'js-cookie';
 export default function Profile() {
     const {
         user, setUser,
-        setTasksList, setMainTaskList,setCompletion, setActs,
+        setTasksList, setMainTaskList, setActs,
         setLoggedIn
     } = useContext(AppContext);
     const [loaded, setLoaded] = useState(true);
@@ -44,7 +44,6 @@ export default function Profile() {
         setTasksList([]);
         setMainTaskList({});
         setActs([]);
-        setCompletion(0);
     }
 
     const handleOnChange = event => {

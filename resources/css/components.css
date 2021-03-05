@@ -158,6 +158,7 @@
     background-color:white; border-radius: 3px; border: 1px solid grey;
     display:flex; justify-content:center; align-items:center;
 }.routineBar:hover{cursor: pointer;}
+/* .hoverUp:hover{transform: translate(0px, -15px); transition: .5s; background:'grey'} */
 
 .createTodoListBar{
     display: flex; align-items: center;

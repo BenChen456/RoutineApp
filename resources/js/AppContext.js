@@ -20,7 +20,6 @@ export const AppProvider = (props) => {
     const [topTasksList, setTopTasksList] = useState({}); // The one tasklist at the top of the hr
     const [bottomTasksList, setBottomTasksList] = useState([]); //The tasklists that are at the bottom of the hr
 
-    const [completion, setCompletion] = useState(0); //The state of the progress bar
     const [bgC, setBgC] = useState('#2FA360'); //The color of the progress bar (Only on nav,todolist,login,userpanel,newtodo)
     const [sbgC, setsBgC] = useState('#008000'); //The color of the 2nd progress bar
 
@@ -45,9 +44,12 @@ export const AppProvider = (props) => {
                 setTasksList([...res.data[0]]);
 
                 //Setting the active list the user is completing
+                let mTaskList = null;
                 res.data[0].forEach(list => {
-                    if(list.id === user.data.current_todolist)
+                    if(list.id === user.data.current_todolist){
+                        mTaskList = {...list};
                         setMainTaskList({...list})
+                    }
                 })
                 let btmList = [];
                 res.data[0].forEach(list => {
@@ -62,37 +64,18 @@ export const AppProvider = (props) => {
                 //The Acts
                 setActs([...res.data[1]]);
                 
-                //Setting the Color of the Nav Bar (only if the tasks aren't reset or maintask isnt null) (!resets as we only need color if we don't need to reset otherwise everything will be grey default)
-                if(!res.data[3] && res.data[2] !== null){
-                    let done = 0
-                    res.data[2].forEach(t => {
-                        if(t.completed === 0){
-                            done++;
-                        }
-                    });
-                    setMainTasks([...res.data[2]]);
-                    let percent = done/res.data[2].length * 100;
-                    setCompletion(percent);
-    
-                    if(percent >= 0 && percent < 100){
-                        setBgC('#2FA360');
-                        setsBgC('green');
-                    }
-                    else {
-                        setBgC('#edce44');    
-                        setsBgC('yellow');
-                    }
-                }
-
                 //The Routines
                 let index = 0;
                 var tasksAndLists = [];
                 res.data[0].forEach(list => {
+                    if(user.data.current_todolist === list.id){
+                        setMainTaskList({...mTaskList, tasks:[...res.data[4][0+index]]})
+                    }
                     tasksAndLists = [...tasksAndLists, {list:list, tasks: [...res.data[4][0+index]]}]
                     index++;
                 });
                 setRoutines([...tasksAndLists]);
-                console.log(tasksAndLists)
+                /* console.log(tasksAndLists) */
 
                 setLoggedIn(true);
                 setLoaded(true); 
@@ -147,6 +130,14 @@ export const AppProvider = (props) => {
         loadPath();
 
     }, []);
+    useEffect(() => {
+        if(mainTaskList === undefined) return;
+        routines.forEach(r => {
+            if(r.list.id === mainTaskList.id){
+                setMainTaskList({...r.list, tasks: [...r.tasks]})
+            }
+        })
+    }, [routines])
 
     return(
         <div>{!loaded || !loaded2 || !loaded3 || !loadedActs ? 
@@ -167,7 +158,6 @@ export const AppProvider = (props) => {
                 mainTaskList, setMainTaskList,
                 routines, setRoutines,
                 mainTasks,setMainTasks,
-                completion, setCompletion,
                 bgC, setBgC,
                 sbgC, setsBgC,
                 acts, setActs

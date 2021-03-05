@@ -31,7 +31,7 @@ export default function Register(props) {
             return alert("Password has to be at least 8 characters long")
         }
 
-        let hasCapOrSpecialChar = false; //Uppercase
+/*         let hasCapOrSpecialChar = false; //Uppercase
         for (var i = 0; i < loginInfo.password.length; i++) {
             if(loginInfo.password[i].toUpperCase() === loginInfo.password[i])
                 hasCapOrSpecialChar = true;
@@ -39,28 +39,28 @@ export default function Register(props) {
         
         if(!hasCapOrSpecialChar){
             return alert('Please include one capital or special character in password')
-        }
+        } */
 
         setLoaded(false);
 
-            Axios.post('http://localhost:8000/api/auth/register', {
-                email:loginInfo.email, 
-                username: loginInfo.username,
-                password:loginInfo.password,
+        Axios.post('http://localhost:8000/api/auth/register', {
+            email:loginInfo.email, 
+            username: loginInfo.username,
+            password:loginInfo.password,
+        })
+            .then(res => {
+                /* cookie.set('token', res.data.access_token);
+                console.log(res.data.user)
+                setUser({...res.data.user}); */
+                /* setLoggedIn(true); */
+                props.history.push('/user_created');
+                setLoaded(true);
             })
-                .then(res => {
-                    cookie.set('token', res.data.access_token);
-                    console.log(res.data.user)
-                    setUser({...res.data.user});
-                    setLoggedIn(true);
-                    props.history.push('/profile');
-                    setLoaded(true);
-                })
-                .catch(e => {
-                    alert('Error: Please enter all fields')
-                    setLoginInfo({...loginInfo, errors: e.response.data})
-                    setLoaded(true);
-                })
+            .catch(e => {
+                alert('Error: Please enter all fields')
+                setLoginInfo({...loginInfo, errors: e.response.data})
+                setLoaded(true);
+            })
     };
 
     return (
