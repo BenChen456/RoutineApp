@@ -9,9 +9,7 @@ export default function Nav() {
         loggedIn, setLoggedIn,
         setTasksList, tasksList, 
         mainTaskList, setMainTaskList,
-        bgC, setBgC,
-        sbgC, setsBgC, 
-        acts, setActs, bottomTasksList,
+        acts, setActs,
         routines
     } = useContext(AppContext);
     const [completed, setCompleted] = useState(0);//Number of tasks completed
@@ -32,14 +30,12 @@ export default function Nav() {
                     /* setCompletion(done/res.data.length * 100);  *///Setting the amount of points
     
                     //Setting the color based on points
-                        if(points >= 0 && points < 100){
+/*                         if(points >= 0 && points < 100){
                             setBgC('#2FA360');
-                            setsBgC('green')
                         }
                         else {
                             setBgC('#edce44');
-                            setsBgC('yellow');
-                        }
+                        } */
             })
         }
     }, [])
@@ -70,10 +66,8 @@ export default function Nav() {
         //Color
         if(done/routines[listIndex].tasks.length * 100 >= 0 && done/routines[listIndex].tasks.length * 100 < 100){ 
             setColor('#2FA360');
-            setsBgC('green');
         } else {
             setColor('#edce44');    
-            setsBgC('yellow');
         }
     }
     const log = () => {

@@ -58,6 +58,8 @@ export default function UserPanel(props) {
     const addNewList = () => {
         if(name === '' || name===" ")
             return alert('Name can not be empty')
+        if(name.length > 20)
+            return alert('Name can be a maxium of 20 characters long')
 
         setLoaded(false);
         axios.post('http://localhost:8000/api/auth/todolist/todolistStore', {
@@ -76,7 +78,7 @@ export default function UserPanel(props) {
             }])
             setName('');
             setLoaded(true);
-        })
+        }).catch(e => alert('Error in creating name'))
     };
 
     return (
@@ -119,12 +121,16 @@ export default function UserPanel(props) {
 
                         </div>
                         <div style={{width:'100%', height:'60vh', overflow:'auto'}}>
-                            {routines.map(r => 
-                                <RoutineBlock key={r.list.id} list={r.list} 
-                                    tasks={r.tasks} props={props} 
-                                    mainTaskList={mainTaskList}
-                                    todoSetBtn={todoSetBtn}
-                                />
+                            {routines.map(r =>
+                                <div key={r.list.id}>{r.list.id === mainTaskList.id ?
+                                    null 
+                                        :
+                                    <RoutineBlock list={r.list} 
+                                        tasks={r.tasks} props={props} 
+                                        mainTaskList={mainTaskList}
+                                        todoSetBtn={todoSetBtn}
+                                    />
+                                }</div>
                             )}
                             
                             <div style={{

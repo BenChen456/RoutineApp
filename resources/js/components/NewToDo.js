@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react'; import '../../css/app.css';
 import ReactDOM from 'react-dom';
-import {Link} from 'react-router-dom';
+import {Link, Prompt} from 'react-router-dom';
 import axios from 'axios';
 import {Table, Button, Spinner} from 'reactstrap'; import {AppContext} from '../AppContext';
 
@@ -223,10 +223,17 @@ function NewTodo({urlId, props}) {
                 current_todolist: null,
             })
         } else {//Setting a new one
-            setMainTaskList({...list});
+            let mainTasks = [];
+            changes.tasks.forEach(t => {
+                if(t.status === 'original'){
+                    mainTasks.push(t)
+                }
+            })
+            setMainTaskList({...list, tasks: [...mainTasks]});
             axios.post('http://localhost:8000/api/auth/update', {
                 current_todolist: id,
             })
+            console.log({...list, tasks: [...mainTasks]})
         }
     }
     const delRoutine = () => {
@@ -282,6 +289,12 @@ function NewTodo({urlId, props}) {
             </div>
                 :
             <div className="container userpanelContainer">
+
+                <Prompt 
+                    when={updateCode.task || changedList.changed}
+                    message="Leaving will delete your unsaved changes. Please update before leaving."
+                />
+
                 {true ? 
                     <div style={{display:'flex', alignItems:'center'}}>
                         <button onClick={()=>console.log(changes, list)}>changes</button>
@@ -467,9 +480,6 @@ function NewTodo({urlId, props}) {
                                 </div>
                             }
                         </div>
-{/*                         <div >
-                            <button onClick={()=>{console.log(list)}}>consolelog</button>
-                        </div> */}
                     </div>
             </div>
         } </div>

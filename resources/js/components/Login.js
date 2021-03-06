@@ -52,7 +52,7 @@ export default function Login(props) {
                     if(list.id === userRes.data.user.current_todolist)
                         setMainTaskList({...list})
                 })
-                let btmList = [];
+/*                 let btmList = [];
                 actsListsRes.data[0].forEach(list => {
                     if(list.id === userRes.data.user.current_todolist){
                         setTopTasksList({...list})
@@ -60,7 +60,7 @@ export default function Login(props) {
                         btmList.push(list)
                     }
                 })
-                setBottomTasksList(btmList);
+                setBottomTasksList(btmList); */
 
                 //The Acts
                 setActs([...actsListsRes.data[1]]);

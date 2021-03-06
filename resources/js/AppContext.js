@@ -14,7 +14,7 @@ export const AppProvider = (props) => {
     const [tasksList, setTasksList] = useState([]); //All the tasklists
     const [mainTaskList, setMainTaskList] = useState({}); //Gets the tasklist you are completeing rn
     const [acts, setActs] = useState([]); //The acts for the sidebar (Login, AppContext get())
-    const [mainTasks, setMainTasks] = useState([]); //The tasks for the tasklist currently
+    const [mainTasks, setMainTasks] = useState([]); //The tasks for the tasklist currently {...list, tasks:[]}
     const [contextTasks, setContextTasks] = useState([]); //The tasks for this user
     const [routines, setRoutines] = useState([]); // {[{list:list, tasks:[]}]}
     const [topTasksList, setTopTasksList] = useState({}); // The one tasklist at the top of the hr
@@ -51,7 +51,7 @@ export const AppProvider = (props) => {
                         setMainTaskList({...list})
                     }
                 })
-                let btmList = [];
+/*                 let btmList = [];
                 res.data[0].forEach(list => {
                     if(list.id === user.data.current_todolist){
                         setTopTasksList({...list})
@@ -59,7 +59,7 @@ export const AppProvider = (props) => {
                         btmList.push(list)
                     }
                 })
-                setBottomTasksList(btmList);
+                setBottomTasksList(btmList); */
 
                 //The Acts
                 setActs([...res.data[1]]);
@@ -151,15 +151,12 @@ export const AppProvider = (props) => {
                 setRoutinesTasksHelper, //NewTodo Todolist
                 contextTasks, setContextTasks,
                 topTasksList, setTopTasksList,
-                bottomTasksList, setBottomTasksList,
                 tasksList, setTasksList, 
                 loggedIn, setLoggedIn,
                 user, setUser,
                 mainTaskList, setMainTaskList,
                 routines, setRoutines,
                 mainTasks,setMainTasks,
-                bgC, setBgC,
-                sbgC, setsBgC,
                 acts, setActs
             }}>
             <ContextDevTool context={AppContext} 
