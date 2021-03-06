@@ -291,13 +291,15 @@ function NewTodo({urlId, props}) {
             <div className="container userpanelContainer">
 
                 <Prompt 
-                    when={updateCode.task || changedList.changed}
+                    when={updateCode.task || changedList.name !== list.name}
                     message="Leaving will delete your unsaved changes. Please update before leaving."
                 />
 
+                {/* <button onClick={()=>console.log(list, changedList)}>c</button> */}
+
                 {true ? 
                     <div style={{display:'flex', alignItems:'center'}}>
-                        <button onClick={()=>console.log(changes, list)}>changes</button>
+                        {/* <button onClick={()=>console.log(changes, list)}>changes</button> */}
                         <div style={{fontSize:'20px'}}>Routine Name</div>
                         <input className="newItem" 
                             type="text" value={changedList.name} onChange={onNewListName}
@@ -325,6 +327,7 @@ function NewTodo({urlId, props}) {
                         {list.name}
                     </div>
                 }
+
                 <Table>
                     <thead style={{height: "25px"}}>
                         <tr>
@@ -419,7 +422,7 @@ function NewTodo({urlId, props}) {
                     </div>}
                     <div className="saveBtns" style={{marginBottom:'50px'}}>
                         <div >
-                            {updateCode.task || changedList.changed ?
+                            {updateCode.task || changedList.name !== list.name ?
                                 <div>
                                     <button onClick={()=>{
                                         updateTodoList(); 

@@ -1,18 +1,24 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useContext} from 'react'
+import {AppContext} from '../../AppContext';
 
-export default function RoutineBlock({list, tasks, props, mainTaskList, todoSetBtn}) {
-    useEffect(()=>{
-        let done = 0;
+export default function RoutineBlock({list, tasks, props, todoSetBtn}) {
+    const {
+        mainTaskList,
+    } = useContext(AppContext);
+
+    useEffect(() => {
+            let done = 0;
             tasks.forEach(t => {
                 if(t.completed == 0)
                     done++
             })
-        if(done > 0){
-            setPer(done/tasks.length * 100)
-        } else {
-            setPer(0);
-        }
-    },[])
+            if(done > 0){
+                setPer(done/tasks.length * 100)
+            } else {
+                setPer(0);
+            }
+    }, [mainTaskList])
+
     const [per, setPer] = useState(0);
     const toTodo = (todoId) =>{
         props.history.push(`/edit/${todoId}`);

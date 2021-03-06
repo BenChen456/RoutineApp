@@ -29,7 +29,7 @@ export default function UserPanel(props) {
         setRightLoaded(false);
         axios.post('http://localhost:8000/api/auth/update', {
             current_todolist: id,
-        })/* .then(res => { */
+        })
             if(id === null) /* If we are removing an item */  {
                 setMainTaskList({});
                 setRightLoaded(true);
@@ -37,7 +37,6 @@ export default function UserPanel(props) {
 
                 routines.forEach(r => {
                     if(r.list.id === id){
-                        setMainTaskList({});
                         setMainTaskList({
                             completed: r.list.completed,
                             id:  r.list.id,
@@ -50,7 +49,7 @@ export default function UserPanel(props) {
 
                 setRightLoaded(true);
             }
-        /* }) */
+            
     } //To set the todolist as the main one and push it to the top
     const log = (id) => {
         console.log(mainTaskList)
@@ -90,7 +89,7 @@ export default function UserPanel(props) {
             <div className="todoListsContainer">
                 <div className="grid1">
                     <SideBar />
-                   {/*  <button onClick={()=>console.log(mainTaskList)}>
+                    {/* <button onClick={()=>console.log(mainTaskList)}>
                     tasklists for page</button> */}
                 </div>
                 <div className="grid2">
@@ -110,7 +109,6 @@ export default function UserPanel(props) {
                                     streak: mainTaskList.streak
                                 }} 
                                     tasks={mainTaskList.tasks} props={props} 
-                                    mainTaskList={mainTaskList}
                                     todoSetBtn={todoSetBtn}
                                 />
                             </div>
@@ -127,7 +125,6 @@ export default function UserPanel(props) {
                                         :
                                     <RoutineBlock list={r.list} 
                                         tasks={r.tasks} props={props} 
-                                        mainTaskList={mainTaskList}
                                         todoSetBtn={todoSetBtn}
                                     />
                                 }</div>

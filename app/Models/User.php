@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use App\Model\Todolist;
 use App\Model\Task;
 use App\Model\Act;
+use App\Model\Theme;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -25,6 +26,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function acts(){
         return $this->hasMany(Act::class);
+    }
+
+    public function themes(){
+        return $this->hasMany(Theme::class);
     }
 
     /**
