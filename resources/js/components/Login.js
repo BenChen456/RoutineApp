@@ -33,8 +33,8 @@ export default function Login(props) {
             email:loginInfo.email, 
             password:loginInfo.password
         };
-        setLoaded(false);
-        Axios.post('http://localhost:8000/api/auth/login', data)
+        setLoaded(false); /* http://localhost:8000 */
+        Axios.post('/api/auth/login', data)
         .then(userRes => {
             cookie.set('token', userRes.data.access_token);
             let token = cookie.get('token');
@@ -52,16 +52,7 @@ export default function Login(props) {
                     if(list.id === userRes.data.user.current_todolist)
                         setMainTaskList({...list})
                 })
-/*                 let btmList = [];
-                actsListsRes.data[0].forEach(list => {
-                    if(list.id === userRes.data.user.current_todolist){
-                        setTopTasksList({...list})
-                    } else {
-                        btmList.push(list)
-                    }
-                })
-                setBottomTasksList(btmList); */
-
+                
                 //The Acts
                 setActs([...actsListsRes.data[1]]);
 

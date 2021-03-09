@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Todolist;
 use App\Models\Task;
+use App\Models\Acts;
+use App\Models\Theme;
+use App\Models\Theme_User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +20,7 @@ class AuthController extends Controller
         $this->middleware('auth:api', 
             [
                 'except' => [
-                    'login', 'register', 'getTime'
+                    'login', 'register', 'getTime', 'loginHelper'
                 ]
             ]
         );
@@ -120,7 +123,7 @@ class AuthController extends Controller
                 $lists = Todolist::findOrFail($list->id)->task;
                 array_push($tasksOfRoutines, $lists);
             }
-
+        
         $actsLists = array($todolists, $acts, $mainTasksList, $reset, $tasksOfRoutines);
 
         return $actsLists;
@@ -264,6 +267,22 @@ class AuthController extends Controller
             ]);
             return '1 things added'.$request->todoCompleted;
         }
+    }
+
+    public function themesBuy(Request $request){
+        DB::table('users')
+        ->where('id', $request->user_id)
+        ->update($request->user);
+
+        $id = DB::table('themes_users')
+        ->insert([
+            'fk_user_id' => $request->user_id,
+            'theme_id' => $request->theme_id
+        ]);
+
+ /*        $themes = DB::select('select * from themes_users where fk_user_id = :id', 
+        ['id' => $request->id]);
+        return $themes; */
     }
 
     /**

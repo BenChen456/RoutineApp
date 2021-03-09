@@ -32,7 +32,7 @@ Route::group([
 
     Route::post('/getTime', [App\Http\Controllers\AuthController::class, 'getTime']);
 
-    Route::post('/herokuStuffCheckApi', [App\Http\Controllers\AuthController::class, 'herokuStuffCheckApi']);
+    Route::post('/themesBuy', [App\Http\Controllers\AuthController::class, 'themesBuy']);
 });
 
 

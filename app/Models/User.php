@@ -10,6 +10,7 @@ use App\Model\Todolist;
 use App\Model\Task;
 use App\Model\Act;
 use App\Model\Theme;
+use App\Model\Theme_User;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -32,6 +33,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Theme::class);
     }
 
+    public function themes_users(){
+        return $this->hasMany(Theme_User::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *
@@ -44,7 +49,8 @@ class User extends Authenticatable implements JWTSubject
         'current_todolist',
         'points',
         'current_time',
-        'timezone'
+        'timezone',
+        'theme'
     ]; 
 
     /**

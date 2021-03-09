@@ -19,6 +19,7 @@ import Register from './Register';
 import UserCreated from './tut/UserCreated';
 import Profile from './Profile';
 import Error from './Error';
+import ThemesStore from './Themes/ThemesStore'
 
 function Main() {
     return (
@@ -34,6 +35,7 @@ function Main() {
                     <AuthRoute path="/routine" exact component={UserPanelVTwo}/> {/* TodoList */}
                     <AuthRoute path="/edit/:id" exact component={UserPanelV3}/> {/* NewTodo */}
                     <AuthRoute path="/activity" exact component={Userpanelv4} /> {/* Acts */}
+                    <AuthRoute path="/themes_store" exact component={ThemesStore} />
                     <AuthRoute path="/profile" exact component={Profile} />
                     <Route path="/user_created" exact component={UserCreated} />
                     <Route component={Error}/>

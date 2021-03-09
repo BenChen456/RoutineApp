@@ -157,7 +157,7 @@
     margin: 25px 0px 0px 22px; width:93%; height: 140px; 
     background-color:white; border-radius: 3px; border: 1px solid grey;
     display:flex; justify-content:center; align-items:center;
-}.routineBar:hover{cursor: pointer;}
+}.routineBar:hover{cursor: pointer; background: rgba(0,0,0,.05);transition:.2s;}
 /* .hoverUp:hover{transform: translate(0px, -15px); transition: .5s; background:'grey'} */
 
 .createTodoListBar{
@@ -175,3 +175,6 @@
     display:flex; align-items: center; justify-content: center;
     background: #efefef; font-size: 25px;
 }
+
+/* Themes */
+.colorBlock:hover{cursor: pointer;}

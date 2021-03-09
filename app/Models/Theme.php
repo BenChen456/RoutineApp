@@ -9,8 +9,5 @@ use App\Models\User;
 class Theme extends Model
 {
     use HasFactory;
-
-    public function user(){
-        return $this->belongsTo(User::class);
-    }
+    
 }

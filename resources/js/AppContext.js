@@ -18,26 +18,26 @@ export const AppProvider = (props) => {
     const [contextTasks, setContextTasks] = useState([]); //The tasks for this user
     const [routines, setRoutines] = useState([]); // {[{list:list, tasks:[]}]}
     const [topTasksList, setTopTasksList] = useState({}); // The one tasklist at the top of the hr
-    const [bottomTasksList, setBottomTasksList] = useState([]); //The tasklists that are at the bottom of the hr
-
-    const [bgC, setBgC] = useState('#2FA360'); //The color of the progress bar (Only on nav,todolist,login,userpanel,newtodo)
-    const [sbgC, setsBgC] = useState('#008000'); //The color of the 2nd progress bar
-
+    
     const [loaded, setLoaded] = useState(false);
     const [loaded2, setLoaded2] = useState(false);
     const [loaded3, setLoaded3] = useState(true); //If the day restarts and we reset the tasks
     const [loadedActs ,setLoadedActs] = useState(false); //If the acts loaded
-
+    
+    const [userThemes, setUserThemes] = useState([
+        {name:'Default', main_color:'#2FA360',done_color:'#edce44',text_color:'white',id:1,points:0}
+    ]); //The owned themes by the current user
+    const [themes, setThemes] = useState([
+        {name:'Ocean', main_color:'#35aef0',done_color:'#21a8af',text_color:'white',id:2,points:500}
+    ]) // Full of themes objects // (ThemesStore)
+    
     const loadPath = () => {
         axios.post('http://127.0.0.1:8000/api/auth/me').then(user => { 
 
             //The User Info
-            setUser({
-                email: user.data.email, username:user.data.username, 
-                id: user.data.id, current_todolist: user.data.current_todolist, points:user.data.points,
-                current_time: user.data.current_time
-            });
-
+            setUser({...user.data});
+            console.log({...user.data})
+            
             axios.post('http://127.0.0.1:8000/api/auth/loginHelper', {id: user.data.id}).then(res => {
 
                 //The Lists
@@ -51,15 +51,6 @@ export const AppProvider = (props) => {
                         setMainTaskList({...list})
                     }
                 })
-/*                 let btmList = [];
-                res.data[0].forEach(list => {
-                    if(list.id === user.data.current_todolist){
-                        setTopTasksList({...list})
-                    } else {
-                        btmList.push(list)
-                    }
-                })
-                setBottomTasksList(btmList); */
 
                 //The Acts
                 setActs([...res.data[1]]);
@@ -154,6 +145,8 @@ export const AppProvider = (props) => {
                 tasksList, setTasksList, 
                 loggedIn, setLoggedIn,
                 user, setUser,
+                userThemes, setUserThemes,
+                themes, setThemes,
                 mainTaskList, setMainTaskList,
                 routines, setRoutines,
                 mainTasks,setMainTasks,

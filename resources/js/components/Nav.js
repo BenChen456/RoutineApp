@@ -7,13 +7,14 @@ export default function Nav() {
     const {
         user, setUser, 
         loggedIn, setLoggedIn,
-        setTasksList, tasksList, 
         mainTaskList, setMainTaskList,
         acts, setActs,
+        userThemes, setUserThemes,
+        themes, setThemes,
         routines
     } = useContext(AppContext);
     const [completed, setCompleted] = useState(0);//Number of tasks completed
-    const [color, setColor] = useState('grey'); //Color of bar
+    const [color, setColor] = useState('#9e9e9e'); //Color of bar
 
     useEffect(() => {
         if(mainTaskList.id !== undefined){
@@ -49,8 +50,7 @@ export default function Nav() {
     const setProgressBar = () =>{
         if(mainTaskList.id === undefined || routines.length === 0) return;
         let listIndex = routines.findIndex(r => r.list.id === mainTaskList.id);
-/*         console.log(mainTaskList)
-        console.log(routines) */
+
         let done=0;
         routines[listIndex].tasks.forEach(t => {
             if(t.completed === 0)
@@ -65,9 +65,9 @@ export default function Nav() {
             
         //Color
         if(done/routines[listIndex].tasks.length * 100 >= 0 && done/routines[listIndex].tasks.length * 100 < 100){ 
-            setColor('#2FA360');
+            setColor(userThemes[user.theme-1].main_color);
         } else {
-            setColor('#edce44');    
+            setColor(userThemes[user.theme-1].done_color);    
         }
     }
     const log = () => {
@@ -121,8 +121,14 @@ export default function Nav() {
                                 <path fillRule="evenodd" d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z"/>
                                 </svg>
                             </Link>
+    {/*                         <Link to="/themes_store" className="navItem" style={{textDecoration: 'none'}}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28px" height="28px" fill="white" className="bi bi-award-fill" viewBox="0 0 16 16">
+                                <path d="M8 0l1.669.864 1.858.282.842 1.68 1.337 1.32L13.4 6l.306 1.854-1.337 1.32-.842 1.68-1.858.282L8 12l-1.669-.864-1.858-.282-.842-1.68-1.337-1.32L2.6 6l-.306-1.854 1.337-1.32.842-1.68L6.331.864 8 0z"/>
+                                <path d="M4 11.794V16l4-1 4 1v-4.206l-2.018.306L8 13.126 6.018 12.1 4 11.794z"/>
+                                </svg>
+                            </Link> */}
                             <Link to="/profile" className="navItem" style={{textDecoration: 'none'}}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="28px" height="28px" fill="white" className="bi bi-person-fill" viewBox="0 0 16 16">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="27px" height="27px" fill="white" className="bi bi-person-fill" viewBox="0 0 16 16">
                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
                                 </svg>
                             </Link>
