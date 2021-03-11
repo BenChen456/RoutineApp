@@ -104,7 +104,7 @@ export default function Nav() {
                             </svg>
                             <div style={{fontSize:'22px'}}>Routine</div>
                         </div>
-                        {/* <button onClick={()=>log()}>check</button> */}
+                        <button onClick={()=>log()}>448</button>
                             {mainTaskList.id === undefined ?
                                 null
                                     :

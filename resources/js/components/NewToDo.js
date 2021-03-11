@@ -219,7 +219,7 @@ function NewTodo({urlId, props}) {
     const currentListStuff = (id) => {
         if(id === null){ //Removing the list
             setMainTaskList({});
-            axios.post('http://localhost:8000/api/auth/update', {
+            axios.post('/api/auth/update', {
                 current_todolist: null,
             })
         } else {//Setting a new one
@@ -230,14 +230,14 @@ function NewTodo({urlId, props}) {
                 }
             })
             setMainTaskList({...list, tasks: [...mainTasks]});
-            axios.post('http://localhost:8000/api/auth/update', {
+            axios.post('/api/auth/update', {
                 current_todolist: id,
             })
             console.log({...list, tasks: [...mainTasks]})
         }
     }
     const delRoutine = () => {
-        axios.post('http://localhost:8000/api/auth/todolist/todolistDelete', {
+        axios.post('/api/auth/todolist/todolistDelete', {
             id: urlId,
         });
 
@@ -251,7 +251,7 @@ function NewTodo({urlId, props}) {
             if(mainTaskList.id == urlId){
                 setMainTaskList({});
 
-                axios.post('http://localhost:8000/api/auth/update', {
+                axios.post('/api/auth/update', {
                     current_todolist: null,
                 })
             } 
