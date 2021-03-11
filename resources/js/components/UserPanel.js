@@ -27,7 +27,7 @@ export default function UserPanel(props) {
 
     const todoSetBtn = (id) => {
         setRightLoaded(false);
-        axios.post('http://localhost:8000/api/auth/update', {
+        axios.post('/api/auth/update', {
             current_todolist: id,
         })
             if(id === null) /* If we are removing an item */  {
@@ -61,7 +61,7 @@ export default function UserPanel(props) {
             return alert('Name can be a maxium of 20 characters long')
 
         setLoaded(false);
-        axios.post('http://localhost:8000/api/auth/todolist/todolistStore', {
+        axios.post('/api/auth/todolist/todolistStore', {
             user_id: user.id,
             name: name
         }).then(res => {
