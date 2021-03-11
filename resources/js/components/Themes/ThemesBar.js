@@ -1,6 +1,18 @@
-import React, {useState} from 'react';
+import React, {useState,useContext, useEffect} from 'react';
+import {AppContext} from '../../AppContext';
 
 export default function ThemesBar({t,buy}) {
+    const {userThemes} = useContext(AppContext);
+    const [owned, setOwned] = useState(false);
+
+    useEffect(()=>{
+        userThemes.forEach(theme =>{
+                if(theme.theme_id === t.theme_id)
+                    setOwned(true);
+            }
+        )
+    },[])
+
     return (
         <div>
             <div style={{
@@ -15,7 +27,7 @@ export default function ThemesBar({t,buy}) {
                 </div>
                 
                 <div style={{padding:'15px 25px'}}>
-                    <ColorBlock main={t.main_color} done={t.done_color} t={t} buy={buy}/>
+                    <ColorBlock main={t.main_color} done={t.done_color} t={t} buy={buy} owned={owned}/>
                 </div>
 
             </div>
@@ -23,29 +35,41 @@ export default function ThemesBar({t,buy}) {
     )
 }
 
-function ColorBlock({main,done,t,buy}){
+function ColorBlock({main,done,t,buy,owned}){
     const [color, setColor] = useState(main);
     return(
         <div style={{display:'flex'}}>
             <div>
                 <div style={{display:'flex',alignItems:'center',fontSize:'18px'}}>
                     <div style={{marginRight:'59px'}}>Main Color</div>
-                    <div className="colorBlock" style={{background:main, width:'100px',height:'50px', 
-                        borderRadius:'5px', border:'2px solid #cfd1d3'
-                    }}  onClick={()=>setColor(main)}/>
+                    {color === main ?
+                        <div className="colorBlock" style={{background:main, width:'100px',height:'50px', 
+                            borderRadius:'5px', border:'2px solid #5C6BC0'
+                        }}  onClick={()=>setColor(main)}/>
+                            :
+                        <div className="colorBlock" style={{background:main, width:'100px',height:'50px', 
+                            borderRadius:'5px', border:'2px solid #cfd1d3'
+                        }}  onClick={()=>setColor(main)}/>
+                    }
                 </div>
                 <div style={{display:'flex',alignItems:'center',fontSize:'18px',marginTop:'15px'}}>
                     <div style={{marginRight:'10px'}}>Completed Color</div>
-                    <div className="colorBlock" style={{background:done, width:'100px',height:'50px', 
-                        borderRadius:'5px', border:'2px solid #cfd1d3'
-                    }} onClick={()=>setColor(done)}/>
+                    {color === done ?
+                        <div className="colorBlock" style={{background:done, width:'100px',height:'50px', 
+                            borderRadius:'5px', border:'2px solid #5C6BC0'
+                        }} onClick={()=>setColor(done)}/>
+                            :
+                        <div className="colorBlock" style={{background:done, width:'100px',height:'50px', 
+                            borderRadius:'5px', border:'2px solid #cfd1d3'
+                        }} onClick={()=>setColor(done)}/>
+                    }
                 </div>
             </div>
 
             <div style={{marginLeft:'50px',marginTop:'-5px'}}>
                 <div style={{fontSize:'18px'}}>Display</div>
-                <div style={{width:'500px',height:'55px',background:'#9e9e9e'}}>
-                    <div style={{width:'500px',height:'55px', display:'flex', alignItems:'center',
+                <div style={{width:'40vw',height:'55px',background:'#9e9e9e'}}>
+                    <div style={{width:'40vw',height:'55px', display:'flex', alignItems:'center',
                         justifyContent:'space-between',background:color}}>
                         <div style={{display:'flex', alignItems:'center'}}>
                             <svg
@@ -85,14 +109,22 @@ function ColorBlock({main,done,t,buy}){
                     </div>
                     <div style={{display:'flex',alignItems:'center',marginTop:'15px'}}>
                         <div style={{fontSize:'18px'}}>{t.points} Points</div>
-                        <div>
+                        <div>{owned ?
+                            
+                            <button style={{marginLeft:'10px',
+                                width:'100px', height:'40px', borderRadius:'5px', fontSize:'18px',
+                                background:'#9E9E9E', border:'2px solid grey', color:'white'
+                            }}>
+                                Owned
+                            </button>
+                                :
                             <button style={{marginLeft:'10px',
                                 width:'100px', height:'40px', borderRadius:'5px', fontSize:'18px',
                                 background:'#35aef0', border:'2px solid #3abaff', color:'white'
-                            }} onClick={()=>buy(t.id,t.points)}>
+                            }} onClick={()=>buy(t,t.points)}>
                                 Buy
                             </button>
-                        </div>
+                        }</div>
                     </div>
                 </div>
             </div>

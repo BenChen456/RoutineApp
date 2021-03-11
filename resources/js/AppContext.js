@@ -25,20 +25,34 @@ export const AppProvider = (props) => {
     const [loadedActs ,setLoadedActs] = useState(false); //If the acts loaded
     
     const [userThemes, setUserThemes] = useState([
-        {name:'Default', main_color:'#2FA360',done_color:'#edce44',text_color:'white',id:1,points:0}
-    ]); //The owned themes by the current user
+        false,
+        {
+            name:'Default', main_color:'#2FA360',done_color:'#edce44',text_color:'white',
+            id:1,fk_user_id:user.id,theme_id:1,points:0
+        }
+    ]); //The owned themes by the current user (ThemesStore and Profile)
     const [themes, setThemes] = useState([
-        {name:'Ocean', main_color:'#35aef0',done_color:'#21a8af',text_color:'white',id:2,points:500}
+        {
+            name:'Default', main_color:'#2FA360',done_color:'#edce44',text_color:'white',
+            id:1,fk_user_id:user.id,theme_id:1,points:0
+        },
+        {
+            name:'Ocean', main_color:'#35aef0',done_color:'#21a8af',text_color:'white',
+            id:2,fk_user_id:user.id,theme_id:2,points:500
+        },
+        {
+            name:'Sunset', main_color:'#ffaf11',done_color:'#cc1111',text_color:'white',
+            id:2,fk_user_id:user.id,theme_id:3,points:10
+        },
     ]) // Full of themes objects // (ThemesStore)
     
     const loadPath = () => {
-        axios.post('http://127.0.0.1:8000/api/auth/me').then(user => { 
+        axios.post('/api/auth/me').then(user => { 
 
             //The User Info
             setUser({...user.data});
-            console.log({...user.data})
             
-            axios.post('http://127.0.0.1:8000/api/auth/loginHelper', {id: user.data.id}).then(res => {
+            axios.post('/api/auth/loginHelper', {id: user.data.id}).then(res => {
 
                 //The Lists
                 setTasksList([...res.data[0]]);
@@ -109,8 +123,8 @@ export const AppProvider = (props) => {
             if(err){
                 cookie.remove('token');
                 token = null;
-            } else {
-                if(decoded.iss !== 'http://localhost:8000/api/auth/login'){
+            } else { /* http://localhost:8000/ */
+                if(decoded.iss !== '/api/auth/login'){
                     cookie.remove('token');
                     token = null;
                     /* console.log('iss fialed') */

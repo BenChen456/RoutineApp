@@ -105,15 +105,10 @@ input[type=number] {
     height: 100vh; 
 }
 
-.sideBar{
-    display:flex; justify-content: center;
-    background: white; width:100%;
-}
 .sideBarItem{
     display:flex; justify-content:center; align-items:center;
-    height:65px; width: 100%; background-color: white; font-size:20px;
-    border-bottom:1px grey solid;
-}
+    height:65px; width: 100%; background-color: white; font-size:20px; font-weight:700px;
+}.sideBarItem:hover{background:#e9ecef;transition: width 1s;cursor: pointer;}
 
 .mainBar{
     background: #dee2e6;

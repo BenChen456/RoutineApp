@@ -1,15 +1,14 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {Link} from 'react-router-dom';
-import '../../css/components.css';
 import {AppContext} from '../AppContext';
-import Axios from 'axios';
+import axios from 'axios';
 import cookie from 'js-cookie';
 
 export default function Profile() {
     const {
         user, setUser,
         setTasksList, setMainTaskList, setActs,
-        setLoggedIn
+        setLoggedIn,
     } = useContext(AppContext);
     const [loaded, setLoaded] = useState(true);
     const [userInfo, setUserInfo] = useState({
@@ -22,7 +21,7 @@ export default function Profile() {
 
     const handleForm = () => {
         setLoaded(false);
-        Axios.post('http://localhost:8000/api/auth/update', {
+        axios.post('http://localhost:8000/api/auth/update', {
             username: userInfo.username,
             /* email:userInfo.email, */
         })
@@ -58,12 +57,13 @@ export default function Profile() {
                 :
             <div className='gridProfile' style={{paddingTop:'7.5vh'}}>
 
-                <div className="sideBar">
-                    <div style={{width:'100%'}} className="sideBarItem">
-                        <Link to="/profile" style={{textDecoration:'none',color:'black'}}>
-                            Profile
-                        </Link>
-                    </div>
+                <div>
+                    <Link className="sideBarItem" to="/profile" style={{textDecoration:'none',color:'black'}}>
+                        Profile
+                    </Link>
+                    <Link className="sideBarItem" to="/profile_theme" style={{textDecoration:'none',color:'black'}}>
+                        Theme
+                    </Link>
                 </div>
 
                 {/* Divide */}
@@ -117,6 +117,7 @@ export default function Profile() {
                             </div>
 
                         </div>
+
                 </div>
             </div>
         }    

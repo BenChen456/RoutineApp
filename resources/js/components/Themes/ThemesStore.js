@@ -5,20 +5,64 @@ import {Spinner} from 'reactstrap';
 import ThemesBar from './ThemesBar';
 
 export default function ThemesStore() {
-    const {user, themes, setThemes} = useContext(AppContext);
+    const {
+        user, setUser,
+        themes,setThemes,
+        userThemes,setUserThemes} = useContext(AppContext);
 
     const [loaded, setLoaded] = useState(false);
-    const buy = (theme_id, points) => {
+    const buy = (theme, points) => {
+
+        //Short Points
+        if(points > user.points){
+            return alert(`You are short ${(points-user.points)} points`)
+        }
+        
+        //Already owned
+        userThemes.forEach(t => {
+            if(t.theme_id === theme.theme_id)
+                return alert(`Theme already owned`)
+        })
+
+        setLoaded(false);
+
+        //Points
         let newPoints = user.points - points;
+        setUser({...user, points:newPoints})
+
+        //Themes
+        
+            //Setting to false so it loads in other thing again
+            let userTh = [...userThemes, {...theme}];
+            setUserThemes([...userTh]);
+
         axios.post('http://localhost:8000/api/auth/themesBuy', {
-            user_id: user.id,
-            theme_id,
+            fk_user_id: user.id,
+            theme_id: theme.theme_id,
+            name:theme.name, 
+            main_color:theme.main_color,
+            done_color:theme.done_color,
+            text_color:theme.text_color,
             user: {points: newPoints}
-        })  
+        }).then(res => setLoaded(true))
+
     }
 
     useState(()=>{
-        setLoaded(true);
+        if(userThemes[0]){
+            setLoaded(true);
+        }
+
+        axios.post('/api/auth/userThemes', {
+            id: user.id,
+        }).then(res => {
+            console.log(userThemes)
+            setUserThemes([true, {
+                name:'Default', main_color:'#2FA360',done_color:'#edce44',text_color:'white',
+                id:1,fk_user_id:user.id,theme_id:1,points:0
+            }, ...res.data]);
+            setLoaded(true);
+        })  
     },[])
 
     return (
@@ -47,7 +91,7 @@ export default function ThemesStore() {
 
                         <div style={{height:'75%', width:'100%'}}>
                             {themes.map(t => 
-                                <ThemesBar key={t.id} t={t} buy={buy} />
+                                <ThemesBar key={t.theme_id} t={t} buy={buy} />
                             )}
                         </div>
                     </div>

@@ -32,6 +32,8 @@ Route::group([
 
     Route::post('/getTime', [App\Http\Controllers\AuthController::class, 'getTime']);
 
+    Route::post('/setThemes', [App\Http\Controllers\AuthController::class, 'setThemes']);
+    Route::post('/userThemes', [App\Http\Controllers\AuthController::class, 'userThemes']);
     Route::post('/themesBuy', [App\Http\Controllers\AuthController::class, 'themesBuy']);
 });
 

@@ -269,15 +269,31 @@ class AuthController extends Controller
         }
     }
 
+    public function setThemes(Request $request){
+        DB::table('users')
+        ->where('id', $request->fk_user_id)
+        ->update($request->user);
+    }
+
+    public function userThemes(Request $request){
+        $themes = DB::select('select * from themes_users where fk_user_id = :id', 
+        ['id' => $request->id,]);
+        return $themes;
+    }
+
     public function themesBuy(Request $request){
         DB::table('users')
-        ->where('id', $request->user_id)
+        ->where('id', $request->fk_user_id)
         ->update($request->user);
 
         $id = DB::table('themes_users')
         ->insert([
-            'fk_user_id' => $request->user_id,
-            'theme_id' => $request->theme_id
+            'fk_user_id' => $request->fk_user_id,
+            'theme_id' => $request->theme_id,
+            'name' => $request->name,
+            'main_color' => $request->main_color, 
+            'done_color' => $request->done_color,
+            'text_color' => $request->text_color,
         ]);
 
  /*        $themes = DB::select('select * from themes_users where fk_user_id = :id', 
