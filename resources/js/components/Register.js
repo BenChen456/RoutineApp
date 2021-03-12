@@ -71,8 +71,8 @@ export default function Register(props) {
                 :
             <div className="flex">
                 <div className="signUpForm">
-                    <form onSubmit={handleForm}>
-                        <h1 style={{marginTop:'30px'}}>Register</h1>
+                    <form onSubmit={handleForm} style={{paddingTop:'40px'}}>
+                        <h1 style={{paddingTop:'40px'}}>Register</h1>
                         <div style={{fontSize:'18px'}}>
                             Email
                         </div>
