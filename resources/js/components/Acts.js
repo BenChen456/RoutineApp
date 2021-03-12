@@ -10,7 +10,7 @@ export default function Acts() {
     const [loaded, setLoaded] = useState(false);
     
     useEffect(() => {
-        axios.post('http://localhost:8000/api/auth/acts' ,{
+        axios.post('/api/auth/acts' ,{
             id: user.id,
             number: 0
         }).then(res =>{

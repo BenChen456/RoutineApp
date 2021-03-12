@@ -43,7 +43,7 @@ export default function Register(props) {
 
         setLoaded(false);
 
-        Axios.post('http://localhost:8000/api/auth/register', {
+        Axios.post('/api/auth/register', {
             email:loginInfo.email, 
             username: loginInfo.username,
             password:loginInfo.password,

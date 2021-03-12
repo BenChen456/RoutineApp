@@ -21,7 +21,7 @@ export default function Profile() {
 
     const handleForm = () => {
         setLoaded(false);
-        axios.post('http://localhost:8000/api/auth/update', {
+        axios.post('/api/auth/update', {
             username: userInfo.username,
             /* email:userInfo.email, */
         })

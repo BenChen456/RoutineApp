@@ -36,7 +36,7 @@ export default function ThemesStore() {
             let userTh = [...userThemes, {...theme}];
             setUserThemes([...userTh]);
 
-        axios.post('http://localhost:8000/api/auth/themesBuy', {
+        axios.post('/api/auth/themesBuy', {
             fk_user_id: user.id,
             theme_id: theme.theme_id,
             name:theme.name, 
