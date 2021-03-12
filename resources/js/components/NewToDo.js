@@ -42,7 +42,7 @@ function NewTodo({urlId, props}) {
     })
 
     useEffect(() => {
-        axios.post(`http://127.0.0.1:8000/api/auth/tasks/`, {id: urlId})
+        axios.post(`/api/auth/tasks/`, {id: urlId})
         .then(res => {
 
             /* Setting the tasklist being worked on */
@@ -180,7 +180,7 @@ function NewTodo({urlId, props}) {
                         }
                     }
         
-                axios.post(`http://127.0.0.1:8000/api/auth/tasks/oneStopUpdateNEW`, {
+                axios.post(`/api/auth/tasks/oneStopUpdateNEW`, {
                     tasksToDelete:changes.delete,
                     post: tasksToPost,
                     update: tasksToUpdate,
