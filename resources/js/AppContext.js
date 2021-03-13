@@ -123,11 +123,12 @@ export const AppProvider = (props) => {
             if(err){
                 cookie.remove('token');
                 token = null;
+                console.log('verify fail')
             } else { /* http://localhost:8000/ */
-                if(decoded.iss !== '/api/auth/login'){
+                if(decoded.iss !== 'http://routineapp2ndpart.herokuapp.com/api/auth/login' || decoded.iss !== 'http://127.0.0.1:8000/api/auth/login'){
                     cookie.remove('token');
                     token = null;
-                    /* console.log('iss fialed') */
+                    console.log('iss fialed')
                 }
             }
         }) //Verify The Token

@@ -62,14 +62,14 @@ export default function ProfileTheme() {
                         {!loaded ?
                             <div></div>
                                 :
-                            <div className="mainBarMargins">
+                            <div style={{padding:'25px'}}>
                                 <div style={{
-                                    fontSize:'25px', height: '50px',marginBottom: '20px',
+                                    fontSize:'25px', height: '50px',marginBottom:'20px',
                                     borderBottom:'2px solid black'
                                 }}>
                                     Themes
                                 </div>
-                                {/* <button onClick={()=>console.log(t)}>ad</button> */}
+                                <button onClick={()=>console.log(userThemes)}>ad</button>
                                 {userThemes.map(t =>
                                     <div key={t.theme_id}>{t.name === undefined || t.name === null ?
                                         null

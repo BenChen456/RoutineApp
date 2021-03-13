@@ -69,7 +69,7 @@ export default function Profile() {
                 {/* Divide */}
 
                 <div className="mainBar">
-                    <div className="mainBarMargins">
+                    <div style={{padding:'25px'}}>
                         <div style={{
                             fontSize:'25px', height: '50px',marginBottom: '20px',
                             borderBottom:'2px solid black'
