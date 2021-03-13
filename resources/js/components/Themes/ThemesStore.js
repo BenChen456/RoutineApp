@@ -19,7 +19,7 @@ export default function ThemesStore() {
         }
         
         //Already owned
-        userThemes.forEach(t => {
+        userThemes.themes.forEach(t => {
             if(t.theme_id === theme.theme_id)
                 return alert(`Theme already owned`)
         })
@@ -33,8 +33,7 @@ export default function ThemesStore() {
         //Themes
         
             //Setting to false so it loads in other thing again
-            let userTh = [...userThemes, {...theme}];
-            setUserThemes([...userTh]);
+            setUserThemes({...userThemes, themes:[...userThemes.themes, {...theme}]});
 
         axios.post('/api/auth/themesBuy', {
             fk_user_id: user.id,
@@ -49,18 +48,23 @@ export default function ThemesStore() {
     }
 
     useState(()=>{
-        if(userThemes[0]){
+        if(userThemes.filled){
             setLoaded(true);
         }
 
         axios.post('/api/auth/userThemes', {
             id: user.id,
         }).then(res => {
-            console.log(userThemes)
-            setUserThemes([true, {
-                name:'Default', main_color:'#2FA360',done_color:'#edce44',text_color:'white',
-                id:1,fk_user_id:user.id,theme_id:1,points:0
-            }, ...res.data]);
+            setUserThemes({
+                filled: true,  
+                themes: [
+                    {
+                        name:'Default', main_color:'#2FA360',done_color:'#edce44',text_color:'white',
+                        id:1,fk_user_id:user.id,theme_id:1,points:0
+                    }, 
+                ...res.data
+                ]
+            });
             setLoaded(true);
         })  
     },[])

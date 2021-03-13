@@ -24,13 +24,15 @@ export const AppProvider = (props) => {
     const [loaded3, setLoaded3] = useState(true); //If the day restarts and we reset the tasks
     const [loadedActs ,setLoadedActs] = useState(false); //If the acts loaded
     
-    const [userThemes, setUserThemes] = useState([
-        false,
-        {
-            name:'Default', main_color:'#2FA360',done_color:'#edce44',text_color:'white',
-            id:1,fk_user_id:user.id,theme_id:1,points:0
-        }
-    ]); //The owned themes by the current user (ThemesStore and Profile)
+    const [userThemes, setUserThemes] = useState({
+        filled: false,
+        themes : [
+            {
+                name:'Default', main_color:'#2FA360',done_color:'#edce44',text_color:'white',
+                id:1,fk_user_id:user.id,theme_id:1,points:0
+            }
+        ]
+    }); //The owned themes by the current user (ThemesStore and Profile)
     const [themes, setThemes] = useState([
         {
             name:'Default', main_color:'#2FA360',done_color:'#edce44',text_color:'white',
@@ -125,10 +127,18 @@ export const AppProvider = (props) => {
                 token = null;
                 console.log('verify fail')
             } else { /* http://localhost:8000/ */
-                if(decoded.iss !== 'http://routineapp2ndpart.herokuapp.com/api/auth/login' || decoded.iss !== 'http://127.0.0.1:8000/api/auth/login'){
+                if(/* decoded.iss != 'http://routineapp2ndpart.herokuapp.com/api/auth/login' &&  */
+                decoded.iss != 'https://routineapp2ndpart.herokuapp.com/api/auth/login'){
                     cookie.remove('token');
                     token = null;
-                    console.log('iss fialed')
+
+/*                     console.log(decoded.iss != 'http://routineapp2ndpart.herokuapp.com/api/auth/login')
+                    console.log(decoded.iss != 'http://127.0.0.1:8000/api/auth/login')
+                    console.log(decoded.iss != 'http://routineapp2ndpart.herokuapp.com/api/auth/login' && decoded.iss !== 'http://localhost:8000/api/auth/login')
+                    console.log(decoded.iss) */
+
+                    /* console.log(decoded.iss) */
+                    /* console.log('iss fialed') */
                 }
             }
         }) //Verify The Token

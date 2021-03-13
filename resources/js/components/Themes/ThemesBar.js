@@ -6,7 +6,7 @@ export default function ThemesBar({t,buy}) {
     const [owned, setOwned] = useState(false);
 
     useEffect(()=>{
-        userThemes.forEach(theme =>{
+        userThemes.themes.forEach(theme =>{
                 if(theme.theme_id === t.theme_id)
                     setOwned(true);
             }

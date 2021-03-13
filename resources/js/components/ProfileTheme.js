@@ -24,7 +24,7 @@ export default function ProfileTheme() {
 
     useEffect(()=>{
 
-        if(userThemes[0]){
+        if(userThemes.filled){
             setLoaded(true);
             return 
         }
@@ -32,10 +32,16 @@ export default function ProfileTheme() {
         axios.post('/api/auth/userThemes', {
             id: user.id,
         }).then(res => {
-            setUserThemes([true,  {
-                name:'Default', main_color:'#2FA360',done_color:'#edce44',text_color:'white',
-                id:1,fk_user_id:user.id,theme_id:1,points:0
-            }, ...res.data]);
+            setUserThemes({
+                filled: true,  
+                themes: [
+                    {
+                        name:'Default', main_color:'#2FA360',done_color:'#edce44',text_color:'white',
+                        id:1,fk_user_id:user.id,theme_id:1,points:0
+                    }, 
+                ...res.data
+                ]
+            });
 
             setLoaded(true);
         })  
@@ -69,12 +75,9 @@ export default function ProfileTheme() {
                                 }}>
                                     Themes
                                 </div>
-                                <button onClick={()=>console.log(userThemes)}>ad</button>
-                                {userThemes.map(t =>
-                                    <div key={t.theme_id}>{t.name === undefined || t.name === null ?
-                                        null
-                                            :
-                                        <div style={{
+                               {/*  <button onClick={()=>console.log(userThemes)}>ad</button> */}
+                                {userThemes.themes.map(t =>
+                                        <div key={t.theme_id} style={{
                                             width:'100%', height:'225px', marginTop:'10px',
                                             border:'2px solid #cfd1d3', borderRadius:'6px'
                                         }}>
@@ -91,8 +94,6 @@ export default function ProfileTheme() {
                                                     />
                                             </div>
                                         </div>
-
-                                    }</div>
                                 )}
                             </div>
                         }

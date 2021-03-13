@@ -33,8 +33,8 @@ export default function Login(props) {
             email:loginInfo.email, 
             password:loginInfo.password
         };
-        setLoaded(false); /* http://localhost:8000 */
-        Axios.post('/api/auth/login', data)
+        setLoaded(false); /* http://localhost:8000 */ /* https://routineapp2ndpart.herokuapp.com/ */
+        Axios.post('https://routineapp2ndpart.herokuapp.com/api/auth/login', data)
         .then(userRes => {
             cookie.set('token', userRes.data.access_token);
             let token = cookie.get('token');
