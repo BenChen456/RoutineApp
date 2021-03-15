@@ -42,7 +42,7 @@ function NewTodo({urlId, props}) {
     })
 
     useEffect(() => {
-        axios.post(`/api/auth/tasks/`, {id: urlId})
+        axios.post('/api/auth/tasks/', {id: urlId})
         .then(res => {
 
             /* Setting the tasklist being worked on */
