@@ -8,7 +8,7 @@ import {Spinner} from 'reactstrap';
 export default function Register(props) {
     const {setUser, setLoggedIn} = useContext(AppContext);
     const [loginInfo, setLoginInfo] = useState({
-        email:'', username: '', password: '', passwordC:'', errors: {}
+        email:'fakeEmail@test.com', username: '', password: '', passwordC:'', errors: {}
     }); //Login Info
     const [loaded, setLoaded] = useState(true);
 
@@ -19,6 +19,10 @@ export default function Register(props) {
 
     const handleForm = (e) => {
         e.preventDefault();
+
+        //Username Checking
+        if(loginInfo.username.length === 0 || loginInfo.username.length > 17)
+            return alert('Username must be between 1 and 17 characters')
 
         //Password Checking
         if(loginInfo.password !== loginInfo.passwordC){
@@ -53,8 +57,15 @@ export default function Register(props) {
                 console.log(res.data.user)
                 setUser({...res.data.user}); */
                 /* setLoggedIn(true); */
-                props.history.push('/user_created');
-                setLoaded(true);
+                console.log(res.data)
+
+                if(res.data == 'taken'){
+                    alert('Username is taken');
+                    return setLoaded(true);
+                } else {
+                    props.history.push('/user_created');
+                    setLoaded(true);
+                }
             })
             .catch(e => {
                 alert('Error: Please enter all fields')
@@ -73,7 +84,7 @@ export default function Register(props) {
                 <div className="signUpForm">
                     <form onSubmit={handleForm} style={{paddingTop:'40px'}}>
                         <h1 style={{paddingTop:'40px'}}>Register</h1>
-                        <div style={{fontSize:'18px'}}>
+{/*                         <div style={{fontSize:'18px'}}>
                             Email
                         </div>
                         <input 
@@ -82,8 +93,8 @@ export default function Register(props) {
                             name="email" 
                             value={loginInfo.email}
                             onChange={handleOnChange}
-                        />
-                        <div style={{fontSize:'18px'}}>Name</div>
+                        /> */}
+                        <div style={{fontSize:'18px'}}>Username</div>
                         <input 
                             className="signUpInput"
                             type="name" 
@@ -91,6 +102,10 @@ export default function Register(props) {
                             value={loginInfo.username}
                             onChange={handleOnChange}
                         />
+                        <div style={{margin:'-10px 0px 10px 0px', color:'#5e5f65',fontSize:'16px'}}>
+                            Username must be between 1 and 17 characters
+                        </div>
+
                         <div style={{fontSize:'18px'}}>Password</div>
                         <input 
                             className="signUpInput"
@@ -124,6 +139,7 @@ export default function Register(props) {
                             Login
                         </Link>
                     </form> 
+                        {/* <button onClick={()=>console.log(loginInfo)}>user</button> */}
                 </div>
             </div>
         }</div>

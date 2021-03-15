@@ -13,6 +13,7 @@ Route::group([
     Route::post('/refresh', [App\Http\Controllers\AuthController::class, 'refresh']);
     Route::post('/me', [App\Http\Controllers\AuthController::class, 'me']);
     Route::post('/update', [App\Http\Controllers\AuthController::class, 'update']);
+    Route::post('/userNameCheck', [App\Http\Controllers\AuthController::class, 'userNameCheck']);
     
     Route::post('/loginHelper', [App\Http\Controllers\AuthController::class, 'loginHelper']);
 

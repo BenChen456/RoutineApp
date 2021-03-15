@@ -20,21 +20,38 @@ export default function Profile() {
     }, []);
 
     const handleForm = () => {
-        setLoaded(false);
-        axios.post('/api/auth/update', {
-            username: userInfo.username,
-            /* email:userInfo.email, */
+        if(userInfo.username.length > 17)
+            return alert('Username can only be a max of 17 character')
+
+        axios.post('/api/auth/userNameCheck', {name: userInfo.username})
+        .then(res => {
+            if(res.data){
+                setLoaded(false);
+                axios.post('/api/auth/update', {username: userInfo.username})
+                    .then(res => {
+                        setUserInfo({
+                            ...userInfo,
+                            username: userInfo.username
+                        })
+                        setUser({
+                            ...user,
+                            username: userInfo.username
+                        })
+                        setLoaded(true);
+                    })
+                    .catch(e => {
+                        setUserInfo({
+                            ...userInfo,
+                            username: user.username
+                        })
+                        alert('Username is empty');
+                        setLoaded(true);
+                    })
+            } else {
+                return alert('Username is taken')
+            }
         })
-            .then(res => {
-                setUserInfo({
-                    username: userInfo.username
-                })
-                setUser({
-                    username: userInfo.username
-                })
-                setLoaded(true);
-            })
-            .catch(e => console.log(e.response.data))
+
     }; //Submit Form
     const logOut = () => {
         cookie.remove('token');
@@ -90,6 +107,7 @@ export default function Profile() {
                             value={userInfo.username}
                             onChange={handleOnChange}
                         />
+                        <div>Username can be a max of 17 characters</div>
 
                         <div style={{display:'flex'}}>
                             {userInfo.username !== user.username ?

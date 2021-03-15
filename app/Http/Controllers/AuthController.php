@@ -63,7 +63,7 @@ class AuthController extends Controller
      */
     public function login()
     {
-        $credentials = request(['email', 'password']);
+        $credentials = request(['username', 'password']);
 
         //If the login is correct in the first place
         if (! $token = auth()->attempt($credentials)) {
@@ -130,12 +130,18 @@ class AuthController extends Controller
     }
 
     public function register(){
-        User::create([
-            'username' => request('username'),
-            'email' => request('email'),
-            'password' => Hash::make(request('password')),
-            'current_time' => Carbon::tomorrow('EST')
-        ]);
+        $user = User::where('username', '=', request('username'))->first();
+        if($user === null){
+            User::create([
+                'username' => request('username'),
+                'email' => request('email'),
+                'password' => Hash::make(request('password')),
+                'current_time' => Carbon::tomorrow('EST')
+            ]);
+            return 'not taken';
+        } else {
+            return 'taken';
+        }
 
         /* return $this->login(request()); */
     }
@@ -143,6 +149,15 @@ class AuthController extends Controller
     public function update(Request $request){
        auth()->user()->update($request->all());
        return response()->json(auth()->user());
+    }
+
+    public function userNameCheck(Request $request){
+        $user = User::where('username', '=', $request->name)->first();
+        if($user === null){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

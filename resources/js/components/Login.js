@@ -16,7 +16,7 @@ export default function Login(props) {
 
     const [loaded, setLoaded] = useState(true); //Only in the catch as you go to userpage after loading
     const [loginInfo, setLoginInfo] = useState({
-        email:'', password: '', errors: {}
+        username:'', password: '', errors: {}
     }); //Login Info
       
     const handleOnChange = event => {
@@ -30,11 +30,11 @@ export default function Login(props) {
         setLoaded(false);
         
         const data = {
-            email:loginInfo.email, 
+            username:loginInfo.username, 
             password:loginInfo.password
         };
         setLoaded(false); /* http://localhost:8000 */ /* https://routineapp2ndpart.herokuapp.com/ */
-        Axios.post('https://routineapp2ndpart.herokuapp.com/api/auth/login', data)
+        Axios.post('http://localhost:8000/api/auth/login', data)
         .then(userRes => {
             cookie.set('token', userRes.data.access_token);
             let token = cookie.get('token');
@@ -89,12 +89,12 @@ export default function Login(props) {
                 <div className="signUpForm">
                     <form onSubmit={handleForm}>
                         <h1 style={{marginTop:'90px'}}>Login</h1>
-                        <div style={{fontSize:'18px'}}>Email</div>
+                        <div style={{fontSize:'18px'}}>Username</div>
                         <input 
                             className="signUpInput"
-                            type="email" 
-                            name="email" 
-                            value={loginInfo.email}
+                            type="username" 
+                            name="username" 
+                            value={loginInfo.username}
                             onChange={handleOnChange}
                         />
                         <div style={{fontSize:'18px'}}>Password</div>

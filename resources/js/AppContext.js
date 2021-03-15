@@ -40,11 +40,11 @@ export const AppProvider = (props) => {
         },
         {
             name:'Ocean', main_color:'#35aef0',done_color:'#21a8af',text_color:'white',
-            id:2,fk_user_id:user.id,theme_id:2,points:500
+            id:2,fk_user_id:user.id,theme_id:2,points:100
         },
         {
             name:'Sunset', main_color:'#ffaf11',done_color:'#cc1111',text_color:'white',
-            id:2,fk_user_id:user.id,theme_id:3,points:10
+            id:2,fk_user_id:user.id,theme_id:3,points:300
         },
     ]) // Full of themes objects // (ThemesStore)
     
@@ -125,10 +125,10 @@ export const AppProvider = (props) => {
             if(err){
                 cookie.remove('token');
                 token = null;
-                console.log('verify fail')
+                /* console.log('verify fail') */
             } else { /* http://localhost:8000/ */
                 if(/* decoded.iss != 'http://routineapp2ndpart.herokuapp.com/api/auth/login' &&  */
-                decoded.iss != 'https://routineapp2ndpart.herokuapp.com/api/auth/login'){
+                decoded.iss != 'http://localhost:8000/api/auth/login'){
                     cookie.remove('token');
                     token = null;
 

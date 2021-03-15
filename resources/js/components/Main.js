@@ -15,6 +15,7 @@ import UserPanelVTwo from './UserPanelVTwo';
 import UserPanelV3 from './UserPanelV3';
 import Userpanelv4 from './Userpanelv4';
 import Login from './Login'; 
+import Tut1 from './Tut/Tut1'; 
 import Register from './Register';
 import UserCreated from './tut/UserCreated';
 import Profile from './Profile';
@@ -29,9 +30,11 @@ function Main() {
                 <div>
                     <Nav componet={Nav}/>
                     <Switch>
+
                     <GuestRoute path="/" exact component={WelcomePage}/>
                     <GuestRoute path="/login" exact component={Login}/>
                     <GuestRoute path="/register" exact component={Register}/>
+                    <GuestRoute path="/user_created" exact component={UserCreated} />
                     <AuthRoute path="/userpanel" exact component={UserPanel}/>
                     <AuthRoute path="/routine" exact component={UserPanelVTwo}/> {/* TodoList */}
                     <AuthRoute path="/edit/:id" exact component={UserPanelV3}/> {/* NewTodo */}
@@ -39,8 +42,10 @@ function Main() {
                     <AuthRoute path="/themes_store" exact component={ThemesStore} />
                     <AuthRoute path="/profile_theme" exact component={ProfileTheme} />
                     <AuthRoute path="/profile" exact component={Profile} />
-                    <Route path="/user_created" exact component={UserCreated} />
+                    <AuthRoute path="/profile" exact component={Profile} />
+                    <AuthRoute path="/tutorial" exact component={Tut1} />
                     <Route component={Error}/>
+
                     </Switch>
                 </div>
             </AppProvider>
