@@ -22,7 +22,7 @@
 }
 .navName{
     display: flex; justify-content: center; align-items: center; font-size: 18px;
-    width: 125px; height:55px; color:white; 
+    width: 200px; height:55px; color:white; 
     transition-timing-function: ease-in-out; transition: 1s;
 }.navName:hover{cursor: pointer;}
 
