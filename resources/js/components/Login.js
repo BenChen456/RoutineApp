@@ -94,7 +94,7 @@ export default function Login(props) {
                 <div className="signUpForm">
                     <form onSubmit={handleForm}>
                         <h1 style={{marginTop:'90px'}}>Login</h1>
-                        <div style={{fontSize:'18px'}}>Username</div>
+                        <div style={{fontSize:'18px'}}>Name</div>
                         <input 
                             className="signUpInput"
                             type="username" 
