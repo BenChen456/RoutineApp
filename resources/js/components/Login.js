@@ -34,7 +34,7 @@ export default function Login(props) {
             password:loginInfo.password
         };
         setLoaded(false); /* http://localhost:8000 */ /* https://routineapp2ndpart.herokuapp.com/ */
-        Axios.post('https://routineapp2ndpart.herokuapp.com/api/auth/login', data)
+        Axios.post('http://localhost:8000/api/auth/login', data)
         .then(userRes => {
             cookie.set('token', userRes.data.access_token);
             let token = cookie.get('token');
@@ -67,7 +67,12 @@ export default function Login(props) {
                     console.log(tasksAndLists)
                 
                 setLoggedIn(true);
-                props.history.push('/userpanel');
+
+                if(userRes.data.user.tut === 0){
+                    props.history.push('/userpanel');
+                } else {
+                    props.history.push('/tutorial');
+                }
             })
         }).catch(e => {
             setLoaded(true);

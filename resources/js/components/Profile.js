@@ -134,8 +134,11 @@ export default function Profile() {
                                 Log Out
                             </div>
 
+                            <div style={{paddingTop:'20px'}}>
+                            <Link to='/tutorial' style={{color:'black'}}>
+                                Retake Tutorial
+                            </Link></div>
                         </div>
-
                 </div>
             </div>
         }    

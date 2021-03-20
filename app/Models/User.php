@@ -50,7 +50,8 @@ class User extends Authenticatable implements JWTSubject
         'points',
         'current_time',
         'timezone',
-        'theme'
+        'theme',
+        'tut'
     ]; 
 
     /**

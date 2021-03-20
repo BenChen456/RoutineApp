@@ -30,6 +30,10 @@ class AuthController extends Controller
         return $request->id;
     }
 
+    public function tut(Request $request){
+        auth()->user()->update($request->all());
+    }
+
     public function getTime(Request $request){
         //1 = true; "" = false;
             $user = User::find($request->id);
