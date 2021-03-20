@@ -128,7 +128,7 @@ export const AppProvider = (props) => {
                 /* console.log('verify fail') */
             } else { /* http://localhost:8000/ */
                 if(/* decoded.iss != 'http://routineapp2ndpart.herokuapp.com/api/auth/login' &&  */
-                decoded.iss != 'http://localhost:8000/api/auth/login'){
+                decoded.iss != 'https://routineapp2ndpart.herokuapp.com/api/auth/login'){
                     cookie.remove('token');
                     token = null;
                 }

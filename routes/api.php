@@ -41,9 +41,6 @@ Route::group([
 });
 
 
-Route::post('/task', [App\Http\Controllers\TaskController::class, 'store']);      //post
-Route::post('/task/edit', [App\Http\Controllers\TaskController::class, 'update']);//put
-Route::post('/task/del', [App\Http\Controllers\TaskController::class, 'delete']); //delete
 Route::post('/task/oneStopUpdate', [App\Http\Controllers\TaskController::class, 'oneStopUpdate']); 
 
 Route::get('/testtask', [App\Http\Controllers\TesttaskController::class, 'index']);

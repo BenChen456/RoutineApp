@@ -42,7 +42,7 @@ function NewTodo({urlId, props}) {
     })
 
     useEffect(() => {
-        axios.post('/api/auth/tasks/', {id: urlId})
+        axios.post('https://routineapp2ndpart.herokuapp.com/api/auth/tasks/', {id: urlId})
         .then(res => {
 
             /* Setting the tasklist being worked on */
@@ -233,7 +233,7 @@ function NewTodo({urlId, props}) {
             axios.post('/api/auth/update', {
                 current_todolist: id,
             })
-            console.log({...list, tasks: [...mainTasks]})
+            /* console.log({...list, tasks: [...mainTasks]}) */
         }
     }
     const delRoutine = () => {
