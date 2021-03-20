@@ -57,7 +57,7 @@ export default function ProfileTheme() {
                         <Link className="sideBarItem" to="/profile" style={{textDecoration:'none',color:'black'}}>
                             Profile
                         </Link>
-                        <Link className="sideBarItem" to="/profile_theme" style={{textDecoration:'none',color:'black'}}>
+                        <Link className="sideBarItem" to="/profile_theme" style={{textDecoration:'none',color:'white',background:'#35aef0'}}>
                             Theme
                         </Link>
                     </div>
