@@ -42,9 +42,10 @@ function NewTodo({urlId, props}) {
     })
 
     useEffect(() => {
-        axios.post('https://routineapp2ndpart.herokuapp.com/api/auth/tasks/', {id: urlId})
+        console.log(urlId);
+        axios.post('https://routineapp2ndpart.herokuapp.com/api/auth/tasks', {id: urlId})
         .then(res => {
-
+            
             /* Setting the tasklist being worked on */
             routines.forEach(r => {
                 if(r.list.id === parseInt(urlId)){
@@ -203,7 +204,7 @@ function NewTodo({urlId, props}) {
 
         //Changing the name of the list
         if(list.name !== changedList.name){
-            axios.post(`http://127.0.0.1:8000/api/auth/todolist/todolistUpdate`, {
+            axios.post(`/api/auth/todolist/todolistUpdate`, {
                 name: changedList.name,
                 id: urlId
             }).then(res => {
