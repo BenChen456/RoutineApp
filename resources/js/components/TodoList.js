@@ -21,7 +21,7 @@ function TodoList() {
             return
         }
 
-            axios.post(`http://127.0.0.1:8000/api/auth/tasks`, { //The Tasks
+            axios.post(`/api/auth/tasks`, { //The Tasks
                 id: mainTaskList.id
             }).then(res => {
                 setTasks([...res.data]);
