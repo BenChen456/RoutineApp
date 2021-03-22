@@ -11,7 +11,6 @@ export default function Login(props) {
         setMainTaskList, setCompletion, 
         setBgC, setsBgC, setActs, setContextTasks,
         setRoutines, routines,
-        setTopTasksList,setBottomTasksList
     } = useContext(AppContext);
 
     const [loaded, setLoaded] = useState(true); //Only in the catch as you go to userpage after loading
