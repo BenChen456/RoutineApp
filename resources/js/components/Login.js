@@ -8,9 +8,9 @@ import cookie from 'js-cookie'; import {AppContext} from '../AppContext';
 export default function Login(props) {
     const {
         setUser, setLoggedIn, setTasksList, 
-        setMainTaskList, setCompletion, 
-        setBgC, setsBgC, setActs, setContextTasks,
-        setRoutines, routines,
+        setMainTaskList,
+        setBgC, setsBgC, setActs,
+        setRoutines,
     } = useContext(AppContext);
 
     const [loaded, setLoaded] = useState(true); //Only in the catch as you go to userpage after loading
