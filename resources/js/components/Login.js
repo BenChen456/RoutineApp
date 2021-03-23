@@ -9,7 +9,7 @@ export default function Login(props) {
     const {
         setUser, setLoggedIn, setTasksList, 
         setMainTaskList,
-        setBgC, setsBgC, setActs,
+        setActs,
         setRoutines,
     } = useContext(AppContext);
 
