@@ -6,7 +6,6 @@ import axios from 'axios';
 export default function ProfileTheme() {
     const {
         user, setUser,
-        themes,setThemes,
         userThemes,setUserThemes,
         mainTaskList,setMainTaskList
     } = useContext(AppContext);
