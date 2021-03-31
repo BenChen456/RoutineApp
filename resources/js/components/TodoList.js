@@ -67,7 +67,7 @@ function TodoList() {
 
         //Updating the streaks
         if(done/tasks.length === 1 && mainTaskList.completed==1){//Make sure tasks are done and the list hasnt already been complteted
-            axios.post(`http://127.0.0.1:8000/api/auth/todolist/todolistUpdate`, {
+            axios.post(`/api/auth/todolist/todolistUpdate`, {
                 streak: mainTaskList.streak + 1,
                 completed: 0,
                 id: mainTaskList.id
@@ -78,19 +78,19 @@ function TodoList() {
         }
 
         //Updates the task in the database
-        axios.post(`http://127.0.0.1:8000/api/auth/task/update`, {
+        axios.post(`/api/auth/task/update`, {
             id: idNumber,
             completed: status
         });
 
         //Adding the Points
         if(done/tasks.length === 1 && mainTaskList.completed==1){ //Make sure tasks are done and the list hasnt already been complteted
-            axios.post(`http://127.0.0.1:8000/api/auth/update`, {
+            axios.post(`/api/auth/update`, {
                 points: user.points+110
             });
             setUser({...user, points: user.points+110});
         } else {
-            axios.post(`http://127.0.0.1:8000/api/auth/update`, {
+            axios.post(`/api/auth/update`, {
                 points: user.points+10
             });
             setUser({...user, points: user.points+10});
@@ -122,7 +122,7 @@ function TodoList() {
                 setActs(newActs);
             }
             console.log(done/tasks.length === 1 && mainTaskList.completed==1)
-            axios.post(`http://127.0.0.1:8000/api/auth/act/insert`, {
+            axios.post(`/api/auth/act/insert`, {
                 user_id: user.id,
                 name: changedTasks[index].name,
                 listName: mainTaskList.name,
@@ -139,7 +139,7 @@ function TodoList() {
                 setActs(newActs);
             }
             
-            axios.post(`http://127.0.0.1:8000/api/auth/act/insert`, {
+            axios.post(`/api/auth/act/insert`, {
                 user_id: user.id,
                 name: changedTasks[index].name,
                 todoCompleted: 1
